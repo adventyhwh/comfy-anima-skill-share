@@ -4,11 +4,41 @@ This is an anima skill share
 
 Systematic prompt-engineering skills for the **Anima** anime image model (circlestone-labs/Anima) — a family of 4 skills covering single-image prompting, NSFW deconstruction, long-form doujin storyboarding, and scene/background art.
 
-为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集，共 4 个 skill，覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制。
+为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集（根目录为 second 分享版，共 4 个 skill；**`v4/` 目录为第四版，共 5 个 skill，见下文 [Version 4](#-version-4-fourth--第四版--v4)**），覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制。
 
 > **⚠️ 18+ 成人内容警告 / Adult Content Warning**
-> 本仓库含 **NSFW / 成人 / 露骨性内容**的提示词方法论（`anima-nsfw-prompt`、`anima-doujin-plan`）。仅限成年人使用。使用者在下载、使用、转发本内容时须自行承担全部责任并遵守所在地法律。
+> 本仓库含 **NSFW / 成人 / 露骨性内容**的提示词方法论（`anima-nsfw-prompt`、`anima-doujin-plan`，v4 同样适用）。仅限成年人使用。使用者在下载、使用、转发本内容时须自行承担全部责任并遵守所在地法律。
 > This repository contains **NSFW / adult / explicit sexual content** prompt methodology. For adults only. Users are solely responsible for compliance with local laws.
+
+---
+
+## 🆕 Version 4 (fourth) / 第四版 — `v4/`
+
+本仓库现含两代内容：**根目录 = second 分享版（4 个 skill，保留不动）**；**`v4/` = 第四版（5 个 skill，当前主线，推荐使用）**。
+
+### 第四版五个 skill
+
+| Skill | Purpose / 用途 |
+|---|---|
+| `anima-prompt` | 提示词层权威主线（第四版重写：公理化纪律体系） |
+| `anima-nsfw-prompt` | NSFW 解构方法论补充 |
+| `anima-doujin-plan` | 长篇（>10p）分镜层权威主线 |
+| `anima-scene-prompt` | 纯场景/背景/环境 |
+| `anima-change` | **新增**：呈现层方法论——"这一帧凭什么被记住"（预期 + 一次得体违反；参考图复刻/对标保真提取） |
+
+### 相比 second 版的更新说明 / What's new vs the root (second) version
+
+1. **新增第五个 skill `anima-change`**（second 为四件套）：呈现层方法论——先推导这一帧的吸引力（核心→基线预期→一次得体违反→视觉交点），再落呈现；含"强载体/弱载体"判别式、禁区与反模式清单、参考图复刻模式。
+2. **提示词纪律体系公理化重构**：second 版的散装规则在第四版收敛为三条核心公理（**组装式模型 / 强先验吞弱信号 / 字面化一切**）的推论体系——规则可推导而非死记；并新增"拼尸块"硬纪律、Tier 0 单帧可读性、clip token 预算（正面 ~150-300 词 / 负面 ~60-120 词，砍词优先级）。
+3. **跨页一致性成体系**：人物块两段式（公开角色"名字即锚" vs OC 全维度固定块）、服装状态机与移除双锚定、道具三档分类（L0 身份符号 / L1 手持 / L2 环境）与生命周期、视线逐页单选、多角色防串角与 faceless 强度层级。
+4. **长篇分镜层大幅深化**：12 列分镜表、情绪×色气双曲线节奏、状态进度条与单调累加器、符号标签状态机、需求→剧本→分镜四阶段转义与三组自检清单。
+5. **ComfyUI 执行层完善**：Aesthetic / Turbo / Base 参数分治（含 Turbo CFG 1.0 硬约束）、NegPip 正面负权重机制、filename_prefix 命名规范与对比轮管理、API 提交流程（probe / submit / poll / verify）。
+6. **负面提示词体系深化**：NEG_CORE/SAFE/NSFW/EXPL 档位基线 + 问题预测追加表 + 正负冲突扫描 + 删误杀项 + 排空纪律。
+7. **目录结构**：second 为根目录平铺文件；v4 按 skill 分文件夹（`v4/<skill-name>/SKILL.md`），可直接整文件夹放入 agent skills 目录。
+
+### 脱敏说明 / Sanitization
+
+第四版分享稿**移除了作者个人实测数据与本地环境**：画师-气质映射表、画师组合配方、NSFW 特化画师表、本地 LoRA 清单、本机路径/硬件信息、带日期的实验记录均不随分享版发布。对应章节保留**通用方法论**（如何自测画师、如何验证组合贡献、LoRA 搭配决策思路）；画师选择请结合社区画师风格数据库（如 Anima Style Explorer 类资源）自行实测。
 
 ---
 
