@@ -4,7 +4,7 @@ This is an anima skill share
 
 Systematic prompt-engineering skills for the **Anima** anime image model (circlestone-labs/Anima) — a family of 4 skills covering single-image prompting, NSFW deconstruction, long-form doujin storyboarding, and scene/background art.
 
-为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集（根目录为 second 分享版，共 4 个 skill；**`v4/` 目录为第四版，共 5 个 skill，见下文 [Version 4](#-version-4-fourth--第四版--v4)**），覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制。
+为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集（根目录为 second 分享版，共 4 个 skill；**`v4/` 目录为第四版，共 6 个 skill，见下文 [Version 4](#-version-4-fourth--第四版--v4)**），覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制、呈现层方法论与工作流约定。
 
 > **⚠️ 18+ 成人内容警告 / Adult Content Warning**
 > 本仓库含 **NSFW / 成人 / 露骨性内容**的提示词方法论（`anima-nsfw-prompt`、`anima-doujin-plan`，v4 同样适用）。仅限成年人使用。使用者在下载、使用、转发本内容时须自行承担全部责任并遵守所在地法律。
@@ -14,9 +14,9 @@ Systematic prompt-engineering skills for the **Anima** anime image model (circle
 
 ## 🆕 Version 4 (fourth) / 第四版 — `v4/`
 
-本仓库现含两代内容：**根目录 = second 分享版（4 个 skill，保留不动）**；**`v4/` = 第四版（5 个 skill，当前主线，推荐使用）**。
+本仓库现含两代内容：**根目录 = second 分享版（4 个 skill，保留不动）**；**`v4/` = 第四版（6 个 skill，当前主线，推荐使用）**。
 
-### 第四版五个 skill
+### 第四版六个 skill
 
 | Skill | Purpose / 用途 |
 |---|---|
@@ -25,10 +25,11 @@ Systematic prompt-engineering skills for the **Anima** anime image model (circle
 | `anima-doujin-plan` | 长篇（>10p）分镜层权威主线 |
 | `anima-scene-prompt` | 纯场景/背景/环境 |
 | `anima-change` | **新增**：呈现层方法论——"这一帧凭什么被记住"（预期 + 一次得体违反；参考图复刻/对标保真提取） |
+| `anima-workflow` | **新增**：工作流约定——文件分类、对比测试（主题/人物/种子三一致）、自动化迭代、读图审计、长篇对话框压字交付（三档对白文风参考见 `references/`）、出图踩坑速查 |
 
 ### 相比 second 版的更新说明 / What's new vs the root (second) version
 
-1. **新增第五个 skill `anima-change`**（second 为四件套）：呈现层方法论——先推导这一帧的吸引力（核心→基线预期→一次得体违反→视觉交点），再落呈现；含"强载体/弱载体"判别式、禁区与反模式清单、参考图复刻模式。
+1. **新增两个 skill**（second 为四件套）：`anima-change`——呈现层方法论，先推导这一帧的吸引力（核心→基线预期→一次得体违反→视觉交点），再落呈现；含"强载体/弱载体"判别式、禁区与反模式清单、参考图复刻模式。`anima-workflow`——工作流约定，覆盖跑批/对比/自动化/长篇交付的全流程规则，重点是长篇对话框压字交付（按 safe/sensitive/nsfw 三档分篇的对白文风参考）与出图踩坑速查。
 2. **提示词纪律体系公理化重构**：second 版的散装规则在第四版收敛为三条核心公理（**组装式模型 / 强先验吞弱信号 / 字面化一切**）的推论体系——规则可推导而非死记；并新增"拼尸块"硬纪律、Tier 0 单帧可读性、clip token 预算（正面 ~150-300 词 / 负面 ~60-120 词，砍词优先级）。
 3. **跨页一致性成体系**：人物块两段式（公开角色"名字即锚" vs OC 全维度固定块）、服装状态机与移除双锚定、道具三档分类（L0 身份符号 / L1 手持 / L2 环境）与生命周期、视线逐页单选、多角色防串角与 faceless 强度层级。
 4. **长篇分镜层大幅深化**：12 列分镜表、情绪×色气双曲线节奏、状态进度条与单调累加器、符号标签状态机、需求→剧本→分镜四阶段转义与三组自检清单。
