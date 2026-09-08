@@ -32,6 +32,8 @@ Systematic prompt-engineering skills for the **Anima** anime image model (circle
 
 以下均为本套 skill 生成的实际作品（各项目精选，含 doujin、pixiv 叙事、拍卖剧情、日常喜剧、月光场景等）：
 
+**生成条件说明**：全部是 Agent 装上这套 skill 后，发送一个**模糊主题**（如「来点轻松，愉快，没什么认知压力的图」）自主完成——意图拆解、分镜、提示词、提交生成、读图审计全流程。纯 t2i 节点，**无 LoRA，无后期修复**。除两张抽了几张卡外，其余都是**无抽卡一轮出**。
+
 | | | |
 |---|---|---|
 | ![hero_inn_scene](例图/hero_inn_scene.png) | ![mirror_cover_p01](例图/mirror_cover_p01.png) | ![ending_redemption](例图/ending_redemption.png) |
