@@ -1,12 +1,12 @@
 ---
 name: anima-nsfw-prompt
-version: fourth-share
+version: fourth-preview-slim
 description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generating NSFW/sensitive/nsfw/explicit/erotic/色情/黄色/R18/勾人/露骨/成人/H场景/黄油/eroge/hentai content. Optimizes the NSFW fragment already inside anima-prompt (does NOT route to a separate template - templates/negative/tags/censorship all stay in anima-prompt). Provides what anima-prompt lacks, deconstruction-focused: NSFW event deconstruction method (erotic-core analysis: find-core -> core-to-visual -> core-nature-posture -> dual-axis -> differentiate -> innovate, generalizes to ANY event not just hypnosis), XP-direction deconstruction reference (core + visual anchors, non-exhaustive), atmosphere tips, common pitfalls, and a few net-new NSFW artists. Lean supplement, not a competing template.
 ---
 
 ## 定位
 
-以 `anima-prompt` 为主，本 skill 只补它没有的 NSFW 特化内容，不路由、不另起模板；结构/模板A-C/负面词/一致性/标签库/安全等级/bar censor 全用 anima-prompt 的。以解构为主：①事件解构（色气核心分析法，会推理任何事件怎么画）②氛围tips ③XP参考库 ④常见坑 ⑤画师补充。**分阶段套图级别**：按安全等级 sensitive 起步逐级递进到 explicit，最后 nsfw 余韵收尾。
+**前置依赖：使用本 skill 前必须同时加载 anima-prompt**——本 skill 只补它没有的 NSFW 特化内容，不路由、不另起模板；结构/模板A-C/负面词/一致性/标签库/安全等级/bar censor 全用 anima-prompt 的（冲突以 anima-prompt 为准）。以解构为主：①事件解构（色气核心分析法，会推理任何事件怎么画）②氛围tips ③XP参考库 ④常见坑 ⑤画师补充。**分阶段套图级别**：按安全等级从 sensitive 起步逐级递进（sensitive→nsfw→explicit），余韵段回非 explicit 收尾。
 
 ## NSFW 事件解构（色气核心分析法）
 
@@ -46,7 +46,7 @@ description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generat
 4. **日常反差** -- 医院/超市/教室等非色情场景 + NSFW 元素，比直接色情更勾人。
 5. **留白勾人** -- 特定场景下不露比露更勾人（`covered nipples, areola slip, cleft of venus, see-through`）。
 6. **情绪递进** -- 羞耻 -> 觉醒 -> 沉沦 -> 余韵，递进比直接展示更有张力。
-7. **视线-关系双向因果** -- ①对峙页显式排除镜头（`not at the camera`）②对视=双向视线互指 ③诱导道具引入页"她看到道具"（道具在视线路径上+目视因果）④排空人群覆盖所有两人页（不允许第三人即 `no other people`+负面 `strangers, bystanders`）。详见 anima-doujin-plan N3 视线规则。
+7. **视线-关系双向因果** -- ①对峙页显式排除镜头（`not at the camera`）②对视=双向视线互指 ③诱导道具引入页"她看到道具"（道具在视线路径上+目视因果）④排空人群覆盖所有两人页（不允许第三人即 `no other people`+负面 `strangers, bystanders`）。详见 anima-prompt 视线纪律。
 8. **道具生命周期** -- 诱导类道具（怀表/钟摆/仪式道具）完成叙事功能后即退场；只有持续性身份道具（collar/leash/淫纹）才全程保留。
 9. **分阶段混用模板** -- 套图前段（设定/氛围/诱导）用模板 C 叙事 NL 更有气氛；后段（明确 H 行为）用模板 B 分段 tag-stack 更干净。
 
@@ -67,7 +67,7 @@ description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generat
 ### 常见误区（三错型）
 
 1. **缺锚点** -- 只写核心没写视觉：催眠只靠怀表（去掉表看不出催眠）-> 入控格配 `glazed/half-closed eyes`（spiral 可作一瞬符号）；发情只写 `aroused` -> 配 `pussy juice`/`biting lip`；卖淫画得太干净 -> 配 `messy hair`/`tired`/`cum on body`；邪教只穿修女服/只放蜡烛 -> 加 `magic circle, hooded figures, cult members` 等仪式元素。
-2. **直接上终态** -- 催眠全程 `spiral eyes` -> 把催眠推向脑死/洗脑（empty），且模型渲染 spiral 不稳定（远镜头放大怪眼、颜色乱跳）——spiral 仅入控一瞬；恶堕一开始就 `ahegao` -> 没有堕落过程感，要从羞耻/抗拒开始递进。
+2. **直接上终态** -- 催眠全程 `spiral eyes` -> 把催眠推向脑死/洗脑（empty）——spiral 仅入控一瞬；恶堕一开始就 `ahegao` -> 没有堕落过程感，要从羞耻/抗拒开始递进。
 3. **姿态与核心性质不符** -- 恶堕用瘫软 -> 抹掉"主动堕落"读成催眠，应主动迎合（见核心性质③）。
 怀表写法：`pocket watch on chain`（不写链子像个粉盒）+ 表盘朝角色/背面朝观众（`watch face toward her, watch back toward viewer`）+ 晃动用 `watch at apex of swing, motion lines`；怀表入控后退场（见 tip8）。常识改变：画得像正常 NSFW -> 缺"觉得这很正常"的反差，色气在日常场景中做露骨行为（大街/教室/食堂）+ `smiling`，别忘写 setting。
 
@@ -76,7 +76,7 @@ description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generat
 1. **手部多手** -- 避免自然语言描述双手做不同动作（"one hand... the other hand..."），用标签式 `hands clawing at sheets`（双手同动作），负面加 `extra hands, multiple hands`（详细手部负面查主 skill 问题预测表）。
 2. **提示词过长** -- 遵守 anima-prompt 的 clip 注意力硬纪律（正面 ~150-300 词/负面 ~60-120 词，硬上限 450 词），NSFW 页尤其容易叠堆——氛围标签选 2-3 条配合，调味料不是主菜；体位/动作/表情/体液贴核心，多余修饰砍掉。
 3. **场景/时间不一致** -- 分阶段套图统一场景和时间，靠角色状态变化推进，不要每张换光线色调。
-4. **服装漂移 / 分阶段一致性** -- 外观模板（发/眼/肤/体型/服饰）逐字复制到每张，禁止改写或省略；服装状态只能按行为轴显式递进（着衣->敞开->褪），每阶段写死——不能 S2 敞开 S3 又拉上。眼部标签别为凹眼神把人推远硬塞：远镜头下 `spiral eyes`/大瞳孔会被放大成怪眼。
+4. **服装漂移 / 分阶段一致性** -- 外观模板（发/眼/肤/体型/服饰）逐字复制到每张，禁止改写或省略；服装状态只能按行为轴显式递进（着衣->敞开->褪），每阶段写死——不能 S2 敞开 S3 又拉上。**远景表情**：采用 wide/远景可用的经验，不因景别预先禁用表情标签或强制改特写；以脸部是否清晰可读为准。既往异常眼部记录保留为个例，原因未确认；出现异常时先检查提示词冲突，并用同配置多 seed 复核，不能仅凭单张失败归因于远景。
 5. **歧义标签** -- `frozen` 会被理解为冰冻（冰块），时间停止用 `time stop, motionless` + NL（"body locked in place as if time stopped"）。能用更精确的 tag/NL 替代就别用有歧义的（NL 替换仅限消歧上下文句；关键特征（表情/姿态/道具）一律用 tag，见坑10）。
   - **5.1 `spiral` 歧义**：非入控页写 `spiral`（光效/图案）会触发圈圈眼——spiral → spiral eyes 是强关联。非入控页光源/光效用 `swirl, concentric glow, curved light trails`；`spiral eyes` 只留给入控页本尊。负面压 `spiral eyes, swirly eyes`。**光效量级控制**：光效/发光是氛围不是主体——写 `small glow, held in his hand`，禁 `filling the foreground`/`bathing the whole frame` 级描述（会把持道具行为挤出焦点、glow 渲染成全幅金圈）。
   - **5.2 明喻字面化**：叙事段比喻（`like a puppet`）会被模型字面渲染成真丝线。护栏：喻体不得落在角色身体/衣饰/肢体上（`like a trophy` 在角色之外安全）；禁 `invisible, string, glass` 类字面诱发词；明喻只放模板C情绪收尾层不放 tag 层。
@@ -96,7 +96,11 @@ description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generat
 
 ## NSFW 画师决策
 
-不确定时 -> 无画师，Anima 自身 NSFW 能力已足够。**长篇 doujin 画师链建议自选稳定组合并全本统一**（选择与验证方法论见 anima-prompt 画师策略）。短篇/单图不确定时无画师。
-特化方向画师表（场景叙事 HCG/表情特写失神/日常色气透视）属作者个人实测数据，本分享版不收录——按主 skill 画师策略自测补充。
+短篇/单图不确定时 -> 无画师，Anima 自身 NSFW 能力已足够。**长篇 doujin**：同本画师链全本统一、不可中途更换，**含 H 动作段全页带画师（H 页不裸奔——08-09 同 seed 实证：H 动作页加画师后质量对齐 C 页、画风统一）**；画师策略有明确对应→用对应；无明确对应→`@mika pikazo, @redjuice` 是大多数场景的优解兜底（唯一已验证组合）；多本同批各本用不同组合防跨本同质化；画师串 ≤2。完整策略见 anima-prompt 画师策略。主 skill 已收录 NSFW 画师及配套 LoRA，查那里。本 skill 仅补充特化方向：
+| 需求 | 画师 |
+|---|---|
+| 场景叙事 HCG | `@x1p4early2026` |
+| 表情特写/失神 | `@k4nz4r1n` |
+| 日常色气/透视 | `@haoni` |
 
 社区多画师串配方**不可照搬**，使用前必须逐个去掉画师做拆解对比验证贡献（详见主 skill 画师策略）。

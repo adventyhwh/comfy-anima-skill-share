@@ -4,7 +4,7 @@ This is an anima skill share
 
 Systematic prompt-engineering skills for the **Anima** anime image model (circlestone-labs/Anima) — a family of 4 skills covering single-image prompting, NSFW deconstruction, long-form doujin storyboarding, and scene/background art.
 
-为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集（根目录为 second 分享版，共 4 个 skill；**`v4/` 目录为第四版，共 6 个 skill，见下文 [Version 4](#-version-4-fourth--第四版--v4)**），覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制、呈现层方法论与工作流约定。
+为 **Anima** 动漫图像模型（circlestone-labs/Anima）编写的系统化提示词方法论 skill 集（根目录为 second 分享版，共 4 个 skill；**`v4/` 目录为第四版（V4.1），共 6 个 skill，见下文 [Version 4](#-version-4-fourth--第四版--v4)**），覆盖单图提示、NSFW 色气解构、长篇黄漫分镜、场景/背景绘制、呈现层方法论与工作流约定。
 
 > **⚠️ 18+ 成人内容警告 / Adult Content Warning**
 > 本仓库含 **NSFW / 成人 / 露骨性内容**的提示词方法论（`anima-nsfw-prompt`、`anima-doujin-plan`，v4 同样适用）。仅限成年人使用。使用者在下载、使用、转发本内容时须自行承担全部责任并遵守所在地法律。
@@ -14,7 +14,31 @@ Systematic prompt-engineering skills for the **Anima** anime image model (circle
 
 ## 🆕 Version 4 (fourth) / 第四版 — `v4/`
 
-本仓库现含两代内容：**根目录 = second 分享版（4 个 skill，保留不动）**；**`v4/` = 第四版（6 个 skill，当前主线，推荐使用）**。
+本仓库现含两代内容：**根目录 = second 分享版（4 个 skill，保留不动）**；**`v4/` = 第四版（V4.1，6 个 skill，当前主线，推荐使用）**。
+
+## 为什么写这套 skill / 创作缘由
+
+我不会写复杂提示词，也不懂光影、构图、分镜这些视觉基本功，甚至连“这个主题怎么写才有趣”都很难凭空想出来。Anima 这类模型又对这些细节敏感——只写「a beautiful girl」它会自由发挥到完全失控。
+
+所以我换了条路：**不写提示词，写意图拆解的方法**。
+
+- **anima-prompt**：把「为什么要画这张、画面靠什么记住、每个维度写什么具体值」拆成可推导的问题，而不是背模板。三条公理（组装式模型/强先验吞弱信号/字面化一切）是从实测里总结的行为模型，所有纪律都是它们的推论。
+- **anima-change**：在意图拆解后、落笔前，专门回答「这一帧凭什么被记住」——先推这帧的吸引力（核心 → 基线预期 → 一次得体违反 → 视觉交点），再决定呈现。参考图在场时切换成保真提取模式。
+- **附带的风格参考**（workflow 里的 dialogue-style、change 里的 style-light）：都是同思路——不写“应该怎么写”，写“哪些做法已经实测翻车、哪些红线不能碰”，留出发挥空间。
+
+这套东西的价值不在提示词本身，在于**让一个不会画画、不会写文案的人，也能通过拆解方法做出不千篇一律的图**。希望对有同样困扰的人有点参考。
+
+## 例图 / Gallery
+
+以下均为本套 skill 生成的实际作品（各项目精选，含 doujin、pixiv 叙事、拍卖剧情、日常喜剧、月光场景等）：
+
+| | | |
+|---|---|---|
+| ![hero_inn_scene](例图/hero_inn_scene.png) | ![mirror_cover_p01](例图/mirror_cover_p01.png) | ![ending_redemption](例图/ending_redemption.png) |
+| ![erza_caged_auction](例图/erza_caged_auction.png) | ![auction_stage2](例图/auction_stage2.png) | ![auction_stage3](例图/auction_stage3.png) |
+| ![pixiv_dogwalk_comedy](例图/pixiv_dogwalk_comedy.jpg) | ![pixiv_pumpkin_comedy](例图/pixiv_pumpkin_comedy.jpg) | ![reze_izakaya](例图/reze_izakaya.jpg) |
+| ![moon_howl](例图/moon_howl.jpg) | ![rainbow_laundry](例图/rainbow_laundry.jpg) | ![rb2_snail_race](例图/rb2_snail_race.png) |
+| ![rb2_sock_tan](例图/rb2_sock_tan.png) | | |
 
 ### 第四版六个 skill
 
@@ -37,9 +61,11 @@ Systematic prompt-engineering skills for the **Anima** anime image model (circle
 6. **负面提示词体系深化**：NEG_CORE/SAFE/NSFW/EXPL 档位基线 + 问题预测追加表 + 正负冲突扫描 + 删误杀项 + 排空纪律。
 7. **目录结构**：second 为根目录平铺文件；v4 按 skill 分文件夹（`v4/<skill-name>/SKILL.md`），可直接整文件夹放入 agent skills 目录。
 
+**V4.1（本次）**：保留画师策略全部内容（画师-气质映射、组合纪律、题材→画师速查、先单画师规则）；补充 anima-change 的轻松向风格参考（`references/style-light.md`）；workflow 升级到 v1.3（轮次纪律、批量提交、服务器运维、点子库使用）；仅移除本地路径/硬件/日期统计，其余实测结论与画师数据全部保留。
+
 ### 脱敏说明 / Sanitization
 
-第四版分享稿**移除了作者个人实测数据与本地环境**：画师-气质映射表、画师组合配方、NSFW 特化画师表、本地 LoRA 清单、本机路径/硬件信息、带日期的实验记录均不随分享版发布。对应章节保留**通用方法论**（如何自测画师、如何验证组合贡献、LoRA 搭配决策思路）；画师选择请结合社区画师风格数据库（如 Anima Style Explorer 类资源）自行实测。
+第四版分享稿（V4.1）**移除了本地环境信息**：本机路径（D盘/E盘/个人工具脚本）、junction 单主本说明、硬件型号、带日期的实验统计、内部项目语境、点子库具体路径。画师策略、负面预测表、一致性纪律、ComfyUI 参数、各版本实测结论等通用内容全部保留。
 
 ---
 

@@ -1,14 +1,14 @@
 ---
 name: anima-prompt
-version: fourth-share
-description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线。把模糊输入转成 Anima 优化的 Danbooru-tag prompt（模板 A/B/C），含三条核心公理、负面意图预测、人物一致性、道具/视线/多角色/多人纪律、画师策略、ComfyUI 参数与生成流程。Route anime/illustration/characters → Anima；realism/photos → 不在本套件范围。长篇 doujin（>10p）构思层走 anima-doujin-plan（本文件为提示词层权威主线）。NSFW 解构方法论走 anima-nsfw-prompt（不另起模板）。
+version: fourth-preview-slim
+description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线。把模糊输入转成 Anima 优化的 Danbooru-tag prompt（模板 A/B/C），含三条核心公理、负面意图预测、人物一致性、道具/视线/多角色/多人纪律、画师策略、ComfyUI 参数与生成流程。长篇 doujin（≥10p）构思层走 anima-doujin-plan（本文件为权威主线，变体冲突时以本文件为准）。NSFW 解构方法论走 anima-nsfw-prompt（不另起模板）。纯场景/背景/环境/地图资源走 anima-scene-prompt；跑批/对比/审计/交付走 anima-workflow。任何 Anima 生图请求本文件与专项 skill 同时加载，冲突以本文件为准。
 ---
 
 # 定位与激活
 
 ## When to Activate
-用户要**生成美术资源**且主体是 anime / illustration / character / 2D art / game art（非写实）时激活；用户点名 anima / Anima / circlestone-labs/Anima 时激活。**路由**：Anima ← 动漫/插画/角色/2D；写实/照片/风景/室内 → 不在本套件范围（如有对应写实 skill 则转交）。含糊 + 角色/动漫 → Anima。不处理视频/3D 模型/纯文字。
-**协作边界**：纯场景/背景（无主角）→ anima-scene-prompt；NSFW 解构 → anima-nsfw-prompt；长篇 doujin（>10p）→ anima-doujin-plan（它管"画什么"分幕/事件链/波折/镜头/节奏，产出 12 列分镜表；本 skill 管"怎么写"，把分镜表逐页转 prompt）。doujin 不抢模板层，本 skill 不越权构思层。
+用户要使用 **Anima** 生成 anime / illustration / character / 2D art / game art 时激活；用户点名 anima / Anima / circlestone-labs/Anima 时激活。只处理 Anima 图像工作流；不处理视频、3D 模型或纯文字任务。
+**协作边界**：纯场景/背景（无主角）→ anima-scene-prompt；NSFW 解构 → anima-nsfw-prompt；长篇 doujin（≥10p）→ anima-doujin-plan（它管"画什么"分幕/事件链/波折/镜头/节奏，产出 12 列分镜表；本 skill 管"怎么写"，把分镜表逐页转 prompt）。doujin 不抢模板层，本 skill 不越权构思层。
 
 # 核心公理（所有写作纪律的根，全部 skill 通用）
 
@@ -20,7 +20,7 @@ description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线
 
 **公理 3 · 字面化一切**：任何比喻/文学词/抽象状态都会被渲染成最常见的具象物件（frozen→冰块、puppet→提线木偶+丝线、like a trophy→真陈列品、pig→真猪鼻）。推论：①角色关键特征（表情/姿态/道具）一律用 **Danbooru tag**，NL 只补氛围/情绪/关系，不重复标签已有信息；②明喻只放模板 C 情绪收尾层，不放 tag 层；③负面主动压字面化产物。
 
-**基础预算（clip 注意力硬纪律）**：正面 **~150-300 词**（经验值 131-235 词高质量，硬上限 ~450 词）；负面 **~60-120 词**。砍词优先级从低到高：环境道具堆砌 → 氛围 NL 扩写 → 动作修饰词 → 表情冗余词；**不可砍**：质量头+安全档+画师、角色块（一致性锚点）、核心动作/表情。负面同理：基线模板+意图预测追加，不加"保险"词。
+**基础预算（clip 注意力硬纪律）**：正面 **~150-300 词**（Anima 2B 实测 131-235 词高质量，硬上限 ~450 词）；负面 **~60-120 词**。砍词优先级从低到高：环境道具堆砌 → 氛围 NL 扩写 → 动作修饰词 → 表情冗余词；**不可砍**：质量头+安全档+画师、角色块（一致性锚点）、核心动作/表情。负面同理：基线模板+意图预测追加，不加"保险"词。
 
 **Tier 0 单帧可读性（先于一切档位）**：单页只允许 **1 主动作 + 1 主导表情 + 1 空间关系**；超过=拆页或砍动作。分镜/脚本同守。
 
@@ -29,8 +29,8 @@ description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线
 **提示词 = 拼尸块清单，不是描述画面。** Anima 没有智能，把 token 一块块拼出来；它不推理因果、不补过程、不理解叙事意图。落脚本时逐句自检：
 
 - **每个要出现的视觉元素必须显式、独立、点名**（tag 或具体物理状态）：一个元素 = 一个尸块。想要"红痕在手腕"就写 red marks on her wrists；想要"围猎"就写 blades pointed at her, she parrying, sparks flying；想要"脱衣"就写结果态 topless, bare shoulders, removed clothes on the floor。
-- **禁止文学化 / 因果 / 叙事句**：being pulled off... she is left in...（脱衣因果链）、rope pressed into... leaving red marks（勒→痕因果）、a trap closing in from all sides（描述画面）、against her will、the moment...——一律删。状态转换**只写结果态**（现在露什么 + 脱掉的件去向在场），不写过程动词和程度副词。
-- **NL 只写"具体可画的物理状态"**（谁 + 哪个身体部位 + 做什么 + 对什么），不承载叙事/情绪/因果；模板 C 只允许末尾一行情绪收尾。
+- **禁止文学化 / 跨时间因果 / 需要脑补的叙事句**：being pulled off... she is left in...（脱衣因果链）、rope pressed into... leaving red marks（勒→痕因果）、a trap closing in from all sides（抽象叙事）、the moment...——一律改成当前帧可见事实。状态转换**只写结果态**（现在露什么 + 脱掉的件去向在场），不写跨时间过程链和程度副词。
+- **NL 允许三个职责，除此之外不扩写**：①具体可画的物理/空间关系（谁 + 哪个身体部位 + 做什么 + 对什么）；②环境与氛围；③ tag 难以独立表达的情绪与人物关系。NL 不重复 tag，不承载跨时间因果或需要模型脑补的剧情；模板 C 可在末尾用一行情绪收尾，其他模板只在消歧确有必要时使用短 NL。
 - **模型不补因果 = 一切都要写死**：绑缚→勒痕单独写；衣服被脱→露出单独写；被围→冲突单独写。宁可多一块，不可指望它长出来。
 - **自检**：扫一遍正面，任何"需要模型脑补因果/过程"的句子 = 不合格，改成结果态 tag。
 
@@ -41,7 +41,7 @@ description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线
 - **场景氛围** → 纯场景转 anima-scene-prompt；角色+场景互动用模板 A/C
 - **游戏/产品资产** → 按用途定比例，氛围匹配调性
 - **NSFW/成人** → 重在 H 动作的场景用模板 B；重在氛围/感觉用模板 C；分阶段套图混用（前段 C 建氛围，H 动作段 B，终态氛围段回 C——混用规划归 doujin-plan N9）
-- **黄漫/长篇套图（>10p）** → 剧本与分镜用 anima-doujin-plan，本 skill 负责逐页落脚本
+- **黄漫/长篇套图（≥10p）** → 剧本与分镜用 anima-doujin-plan，本 skill 负责逐页落脚本
 - **测试/对比** → 固定 seed、简化变量、用 _compare 子文件夹、模板 A 快速迭代
 - **自动化批量/高质量成品** → 默认模板 C
 
@@ -78,10 +78,9 @@ description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线
 [setting: 场景/环境/光线]
 [text: 文字/音效 (如需)]
 [series]
-[quality tail: highres, absurdres, masterpiece, best quality]
 ``
 **setting 段不能省**（不写场景=默认纯白背景，NSFW 尤其需要）。`BREAK` 可代替换行但有被模型当画面文字烘焙到纸/卷轴上的风险——**优先真换行分段**；必须用 BREAK 时负面加 `text, english text, letters, words`，且 BREAK 附近避免放文字载体道具。
-**六行骨架（长篇 doujin 场景页参考）**：①camera 行 `from {front/side/above/below/pov}, {shot}, {dutch angle|dynamic pose|shallow depth of field|dramatic lighting}` ②角色+服装状态行（人物块固定段 + torn/damaged/removing 状态词头）③动作行（体位/接触点显式）④表情行（三档字面库选档）⑤环境行（**地点+2-3 道具+光源+色调**）⑥回响行 `highres, absurdres, masterpiece, best quality,`。骨架价值是"每层一个语义"而非固定格式。
+**六行骨架（长篇 doujin 场景页参考）**：①质量头（质量+档位+censor，只出现一次）②camera 行 `from {front/side/above/below/pov}, {shot}, {dutch angle|dynamic pose|shallow depth of field|dramatic lighting}` ③角色+服装状态行（人物块固定段 + torn/damaged/removing 状态词头）④动作行（体位/接触点显式）⑤表情/效果行（三档字面库选档）⑥环境行（**地点+2-3 道具+光源+色调**，必要时用短 NL 消歧/收氛围）。骨架价值是"每层一个语义"而非固定格式。
 
 ## 模板 C：叙事模板（成品级/自动化/默认）
 用**分号分层法**：分号串联画面层次，每片聚焦一个层次，不分句。比换行更连贯，比标签堆叠更精确。
@@ -89,7 +88,7 @@ description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线
 写法要点：**角色四件套**（外观+服装每件+动作+表情，单角色 50-80 词）；**否定式定调**（rather than/avoids/not 排除歧义）；**"反摆拍"美学**（characters focused on their own actions rather than looking at the camera, non-staged realism, unposed, candid）；**具体>笼统**（limited to 6 hues: electric cyan, burnt orange… > vibrant colors）；**情绪收尾**（最后 1-2 个分号片段必是 mood/atmosphere）；**画师/风格前置**（长描述前先 @画师锁定画风）。
 完整例（C；演示分号分层，实际按画师策略与 AES 纪律——AES 不加 score_*）：
 ``
-masterpiece, best quality, safe, highres, newest, anime coloring, @your-artist. A gentle half-elf girl with very long silver hair and purple eyes, detailed round eyes with large pupils, pointy ears, wearing a white and purple dress with cross-lacing and a crystal pendant; standing in a sunlit garden with soft diffused light casting gentle shadows; looking at the viewer with a gentle smile; shallow depth of field, low-angle portrait composition; rendered with delicate brushwork and soft pastel tones; evoking a serene, ethereal atmosphere of quiet grace.
+masterpiece, best quality, safe, highres, newest, anime coloring, @rella. A gentle half-elf girl with very long silver hair and purple eyes, detailed round eyes with large pupils, pointy ears, wearing a white and purple dress with cross-lacing and a crystal pendant; standing in a sunlit garden with soft diffused light casting gentle shadows; looking at the viewer with a gentle smile; shallow depth of field, low-angle portrait composition; rendered with delicate brushwork and soft pastel tones; evoking a serene, ethereal atmosphere of quiet grace.
 ``
 
 # 质量标签 / 安全等级 / 负面提示词
@@ -98,7 +97,7 @@ masterpiece, best quality, safe, highres, newest, anime coloring, @your-artist. 
 - **Aesthetic（默认）**：`masterpiece, best quality` 即可，可加 very aesthetic/amazing quality/ultra detailed/intricate details/highres/newest/professional illustration。**不要 score_***。
 - **Turbo/Base**：加 score_9,8,7；负面可加 score_1,2,3。
 - 元标签：分辨率 highres/absurdres；时间 newest（默认）/year 20XX/old；风格 anime coloring/anime screenshot/official art/cel shading/clean lineart；美学 very aesthetic/beautiful lighting/ultra detailed。
-- **质量词纪律**：质量词只写一次（头或尾择一）；同义词选 3-4 个禁堆叠。
+- **质量词纪律**：质量词只写一次且只放提示词头；同义词选 3-4 个禁堆叠。
 
 ## 安全等级（四档，按画面可见露点判定）
 `safe`（全年龄）/ `sensitive`（性感氛围但**不露**）/ `nsfw`（**露乳房**）/ `explicit`（**露性器官**，通常配 uncensored）。explicit 页正面**必须点名露性器官**（penis exposed, penetration, sex, fellatio 按行为写），禁只暗示。**例外（单人裸露氛围页）**：无性行为/无角色交互/不聚焦展示身体的单人 explicit 页（终态/余韵/独处），不强制点名——`nude, bare breasts` 即可，走纯模板 C。判据："讲故事还是展示身体？"讲故事→纯 C；展示身体→B+C。
@@ -140,7 +139,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 | 多人页归属模糊 | 道具/武器归错人 | 见"多角色纪律-归属"（归属句+反面排除句+在场部件）|
 | 广角/终局页前景小道具 | 唯一前景实体被放大成主角道具 | 正面给尺寸+状态词；负面 oversized X, emblem, crest, insignia |
 
-**权重语法**：Anima 对低权重不敏感，(tag:1.5) 或更高有效，(tag:0.8) 几乎无效；多层括号≈强加强；负权重 (tag:-1) 压制；画师权重 (@artist:1.5) 加强。**NegPip（正面负权重）**：部分执行脚本支持把正面里的 (tag:-权重) 自动拆到负面节点——**Turbo（CFG 1.0）负面节点几乎无效**，排除词优先用 NegPip 放正面（如 (wimple:-1.5), (puppet strings:-1.5)）；脚本不支持 NegPip 时，Turbo 下改用正面显式排除句（如 no head covering）并接受折损；AES（CFG 4.0）直接加负面节点即可。
+**权重语法**：Anima 对低权重不敏感，(tag:1.5) 或更高有效，(tag:0.8) 几乎无效；多层括号≈强加强；负权重 (tag:-1) 压制；画师权重 (@artist:1.5) 加强。**NegPip（正面负权重）**：部分执行脚本支持把正面里的 (tag:-权重) 自动拆到负面节点——**Turbo（CFG 1.0）负面节点几乎无效**，排除词优先用 NegPip 放正面（(wimple:-1.5), (puppet strings:-1.5)）；脚本不支持时，Turbo 下改用正面显式排除句并接受折损；AES（CFG 4.0）直接加负面节点即可。
 
 **权重进阶**：严重问题加权 (bad hands:1.6), (6 fingers:1.5), (censored:1.5)；风格强推 (3d:1.5), (realistic:1.5)；组加权 (worst quality, low quality, normal quality:1.4)。
 
@@ -298,30 +297,34 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 
 # LoRA 使用指导
 
-本节只给通用决策思路，不附具体 LoRA 清单（文件名/触发词以你本地实际为准，照搬他人清单前必须实测）。
-**决策流程**：质量不够→通用质量增强型 LoRA（权重 0.5-1.0 起步）；色彩平淡→色彩风味 LoRA（0.6 起）；NSFW 质量不够→NSFW 增强型 LoRA（0.8 左右）；要画师风格→画师 LoRA + 对应画师 tag；要特定动漫画风→对应风格 LoRA；Turbo 加速→Turbo 专用加速 LoRA + 减步（**仅 Turbo 可用，AES CFG 4 下会崩**）；不需要→不加。
-**使用限制**：8GB 级显存最多叠 2-3 个 LoRA，1-2 个最稳；画师风格 LoRA 必须配对应画师 tag 否则效果很弱；跨模型变体（AES/Turbo）混用前先同 seed 实测。
+本地已装（ComfyUI/models/loras/）：anima-highres-aesthetic-boost（通用增强，AES+Turbo，0.5-1.0）、anima_turbo_4step_v2_longer（仅 Turbo，0.8，4 步加速）、Hentai_Studio_Quality_Anima-step00001300（NSFW 增强，0.8）、saio-ga-ushi_v1_epoch10（@sogushstyle 画风，NSFW 专用，1.0）、KishimotoMasashi_AnimaBaseV10_byKonan（岸本热血少年漫画风，1.0）。
+**决策流程**：质量不够→anima-highres-aesthetic-boost 0.8；NSFW 质量不够→Hentai_Studio_Quality 0.8；要画师风格→画师 LoRA+对应画师 tag；要岸本风→KishimotoMasashi 1.0；Turbo 加速→anima_turbo_4step 0.8+4 步（仅 Turbo，AES CFG 4 下会崩）；不需要→不加。
+**使用限制**：8GB 级显存最多叠 2-3 个 LoRA，1-2 个最稳；画师风格 LoRA 必须配对应画师 tag 否则效果很弱；例子中的 LoRA 文件名和触发词可能与本地不同，不可直接照搬。
 
 # 画师策略
 
 ## 何时用/不用
-- **高人气/经典/近年热门角色 → 无画师**（Anima 训练充分，画师反而干扰还原）
-- **长篇 doujin（>10p）→ 先按题材判断本子适合的画师组合（冷门还原/特定风格/NSFW 特化），无明确对应时选高人气通用风格画师兜底；多本同批时各本用不同组合防跨本同质化。同本内画师链全本统一、不可中途更换（经验：H 动作页加画师后质量对齐叙事页、画风统一；模板差异只保留在 NL vs tag-stack 结构）**。
+- **高人气/经典/近年热门角色 → 无画师**（Anima 训练充分，画师反而干扰还原，阿库娅/由乃实测）
+- **长篇 doujin（>10p）→ 先按画师策略判断本子适合的画师组合（冷门还原/特定风格/NSFW 特化），无明确对应用 `@mika pikazo, @redjuice` 兜底；多本同批时各本用不同组合防跨本同质化**（原"全本统一硬基线 `@mika pikazo, @redjuice`"降为兜底默认；2026-08-09 同 seed A/B 实证保留：B/H 动作页加画师后质量对齐 C 页、画风统一，同本内画师链全本统一、不可中途更换，模板差异只保留在 NL vs tag-stack 结构）。
 - 冷门角色/Anima 学不准 → 画师辅助还原；需要特定风格 → 对应风格画师；NSFW → 可用 NSFW 画师；无明确风格要求 → 无画师。
-## 核心画师表（不随分享版发布）
-画师-气质映射、画师组合配方、题材→画师速查属**作者个人实测数据**，本分享版不收录。建议自建：固定角色 + 固定 seed，批量试画候选画师，记录画风表征后按题材归档（方法与纪律见下）。可借助社区画师风格数据库（如 Anima Style Explorer 类资源）选候选。
-**毒点警告（通用）**：部分画师 tag 在特定模型变体上存在表征崩坏（毒点），且任何来源的画师清单都未必标注适用变体——照抄前必须先用同 seed 实测。
+## 核心画师（实测；其余气质/风格靠实测补充）
+温婉/清冷/精灵系→@rella（+ detailed eyes, round eyes, large pupils）；强个性/傲娇/腹黑/张扬→@hiten；神秘/氛围/魔女系→@shirabi；深色/哥特/冷调→@mochizuki kei（Trigger 系灰调表征偏差，用对角色出彩）；热血/红色系→@modare/@namie；萌系→@askzy；少女向精致→@yoneyama mai（+ normal neck, small head 修正长脖子）；水彩/场景→@sw33t/@acky bright；superflat→@mucha；像素→@capcom_vs_snk2/@motocross saito；线稿→@imkay 3；NSFW→@cowani/@sogushstyle/@spd/@c0ff1ng/@shexyo；现代日常/人妻/成熟→@tatsunami youtoku（人妻NTR专精，天然带 mature female/aged up 链）、@yukiyoshi mamizu、@kyuuba melo、@a5h1ma；韩漫风现代室内→@dishwasher1910/@nixeu；水彩日常→@acky bright。
+**毒点警告**：@sw33t/@geffstyle/@Ani2rel 仅 base 模型实测，AES 未验证——AES 直接照抄带毒（表征可能崩），用于 AES 必须先同 seed 实测。完整画师频率表属作者个人实测数据，见作者本地 select/ 例文，不随分享版发布。
 ## 画师串纪律
-画师串 **≤2 优先**；三画师及以上风格先验抢占背景渲染权重（经验：纯白背景概率上升）。组合画师=画师名逗号连接。四画师组合一律不用（实测收益普遍一般）。
+画师串 **≤2 优先**；三画师及以上风格先验抢占背景渲染权重（实测纯白背景概率上升）。组合画师=画师名逗号连接。四画师组合一律不用（实测都一般）。
+**多画师串唯一保留：`@mika pikazo, @redjuice`**（已验证兜底组合）。**其余双/三画师组合一律不用**（2026-09-03 决策：历史三画师配方未经拆解验证，且 pixiv 叙事批 31 张实测单画师效果优于组合；单画师风格锚最干净，默认永远先单画师，确需组合必须先同 seed 对比重验）。**"先单画师"适用范围：画师策略有合适单画师对应时**（题材→画师速查命中即用该画师）；**长篇 doujin 无明确对应时不先试单画师再回退，直接用已验证组合 `@mika pikazo, @redjuice` 兜底**——该组合是大多数无对应场景的优解（见"何时用/不用"）。
+## 题材→画师速查
+重H→a5h1ma/nekojira（单选）；现代日常人妻→dishwasher1910/tatsunami youtoku；熟女→sogush；英气→mika pikazo/hiten；场景/氛围→rella；安全调和→hiten；叙事/喜剧/动作向（2026-09-02 pixiv 批实测中选）→hiten/modare/yoneyama mai/dishwasher1910/rella；shirabi/mochizuki kei/acky bright 只用于纯氛围单图（叙事题材实测压可读性）。
 ## 关键结论（实测精华）
 1. 高人气角色优先无画师，且不要降画师权重"修"还原度（降权 destabilize 风格锚点滑向 2.5D，保持 1.0，用 feature tag 补被画师覆盖的特征）。
-2. 画师 tag 不一定忠实于画师本人风格（表征偏差）。不能凭本人风格预判，必须实测。
-3. 画师-角色匹配要到气质+配色级别——没有坏画师 tag，只有放错地方的画师 tag（反例：灰调画师会把金发角色配色带偏）。
-4. 系统风格特征无法靠 seed-rolling 修复（画师签名特征是必然）——用相反 tag 补偿但注意 whack-a-mole，接受小瑕疵。
+2. 画师 tag 不一定忠实于画师本人风格（表征偏差，@mochizuki kei=Trigger 系灰调）。不能凭本人风格预判，必须实测。
+3. 画师-角色匹配要到气质+配色级别——没有坏画师 tag，只有放错地方的画师 tag（mochizuki+Stocking 完美，金发在灰调下变粉）。
+4. 系统风格特征无法靠 seed-rolling 修复（yoneyama 脖子长是画师签名）——用相反 tag 补偿但注意 whack-a-mole，接受小瑕疵。
 5. 多画师配方必须拆解对比验证（逐个去掉画师验证是否真有贡献）。
 6. 病娇/微表情气质靠 pose tag 锚定 >> 表情 tag。
 7. 画师链用随机 seed——永远不从一个 seed 判画师好坏。
-8. 避免半写实/油画风画师（半写实 tag 在 Anima 动漫域易翻车）。
+8. 避免半写实/油画风画师（@wlop 在 Anima 动漫域翻车）。
+> 完整全场景实测普查数据量太大，已外置作者本地参考文件，不内联本 skill。兜底组合与速查表见上。
 
 # ComfyUI parameters
 
@@ -329,8 +332,8 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 - **Aesthetic fp16（默认）**：model anima-aesthetic-v1.1.safetensors → UNETLoader (weight_dtype: default)；TE qwen_3_06b_base.safetensors → CLIPLoader (type: stable_diffusion)；VAE qwen_image_vae.safetensors → VAELoader；Sampler er_sde|euler；Scheduler simple；**Steps 30 (30-50)；CFG 4.0 (4-5)**；负面不用 score_*。
 - **Turbo fp16（需明确指定）**：model anima-turbo-v1.0-fp16.safetensors；Sampler er_sde|euler；**Steps 10 (8-12)；CFG 1.0**（CFG-free，>1 崩）；质量词加 score_9,8,7，负面可加 score_1/2/3。
 - **Base**：model anima-base-v1.0.safetensors；Steps 30；CFG 4.0；加 score_*。
-- **GGUF 量化（仅 VRAM 不足时）**：Q4_K_M/Q5_K_M/Q8_0 → UnetLoaderGGUF。注意反量化有额外开销，低显存设备上未必比 fp16 快；Q5 档位可能出现质感偏硬（木刻感）。仅 fp16 OOM 时考虑。
-**Pitfalls**：①CLIPLoader type=stable_diffusion 正确（ComfyUI 自动识别 Qwen3-0.6B 路由到 anima.te/AnimaTokenizer，下拉无 anima 选项不要找；TE 是 safetensors，用原生 CLIPLoader，不是 GGUF CLIP loader）；②Turbo CFG 必须 1.0（AES 用 4.0，不要混淆），>1 崩；③Sampler 不唯一（er_sde 官方默认/euler Turbo pick，差异是风格不是对错）；④Agent 不要 Read 输出图验证（多数文本模型非多模态，读 PNG 可能失败）——用文件大小 + PNG tEXt prompt 块验证，最终由用户看图；⑤画师-角色配色冲突可负面针对性加颜色 tag，但根因是画师选错，换画师优于硬补偿；⑥分段式提示词的换行会原样传入 ComfyUI——提交时确保换行符保留（CLI 传参注意 \n 转义或用 stdin 管道）。
+- **GGUF 量化（仅 VRAM 不足时）**：Q4_K_M/Q5_K_M/Q8_0 → UnetLoaderGGUF。**实测 8GB VRAM 上 GGUF 比 fp16 更慢**（反量化开销>VRAM 节省）；Aesthetic Q5 有木刻感。仅 fp16 OOM 时考虑。
+**Pitfalls**：①CLIPLoader type=stable_diffusion 正确（ComfyUI 自动识别 Qwen3-0.6B 路由到 anima.te/AnimaTokenizer，下拉无 anima 选项不要找；TE 是 safetensors，用原生 CLIPLoader，不是 GGUF CLIP loader）；②Turbo CFG 必须 1.0（AES 用 4.0，不要混淆），>1 崩；③Sampler 不唯一（er_sde 官方默认/euler Turbo pick，差异是风格不是对错）；④输出图由多模态 Agent 直接读图评价（NSFW/长篇批量建议派子代理读，防敏感图像进主对话）——stat 看大小 + PNG tEXt prompt 块可作参数辅助验证；⑤画师-角色配色冲突可负面针对性加颜色 tag，但根因是画师选错，换画师优于硬补偿；⑥分段式提示词的换行会原样传入 ComfyUI——提交时确保换行符保留（CLI 传参注意 \n 转义或用 stdin 管道）。
 
 # Naming convention (mandatory)
 
@@ -339,13 +342,13 @@ ComfyUI 默认 ComfyUI_00001_.png 无用。设 filename_prefix：`anima_<subject
 
 # Generate via local ComfyUI
 
-**执行方式**：用任意封装 ComfyUI API 的提交脚本（推荐自写一个：封装 submit+poll+verify，CLI 参数 --prompt --negative --width --height --seed --prefix），或直接用 ComfyUI 官方 Anima workflow 模板。API 队列格式：`{"prompt": {node_id: {class_type, inputs}}}`。
+**首选便捷执行器**：用任意封装 ComfyUI API 的提交脚本（推荐自写一个：封装 submit+poll+verify，CLI 参数 --prompt --negative --width --height --seed --prefix），缺失时 fallback 官方 workflow 模板（拖官方 workflow 示例图进 ComfyUI 加载），或查脚本源码（API 格式 {"prompt": {node_id: {class_type, inputs}}}）。
 流程要点：
 1. **Probe**：GET http://127.0.0.1:8188/system_stats；down 则启动 ComfyUI（--listen 127.0.0.1；低显存设备加 --lowvram 防 VAE decode OOM；先清理僵尸 python 进程释放 VRAM）。
 2. **Submit**：POST /prompt {"prompt": graph, "client_id": "anima"}。成功 = {"prompt_id":..., "number":N, "node_errors":{}}——空 node_errors = 验证通过，非空才是真失败。
 3. **Poll**：GET /history/{prompt_id} 直到 status.completed；读 outputs[*].images[*]。
 4. **Locate**：文件先落 output/；若配置了自动整理脚本，可能已被移到日期子目录——根路径找不到则 glob output/**/<filename>。
-5. **Verify（纯文本）**：stat 文件大小 + 解析 PNG tEXt prompt 块确认参数。不要 Read 图片。
+5. **Verify（读图）**：Read PNG 直接评价画面质量（多模态）；stat 文件大小 + 解析 PNG tEXt prompt 块可作参数辅助验证。
 6. **Report**：最终路径+参数给用户，让他们看图。
 
 # Output structure (for every Anima request)

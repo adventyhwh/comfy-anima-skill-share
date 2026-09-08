@@ -1,8 +1,10 @@
 ---
 name: anima-scene-prompt
-version: fourth-share
-description: Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art to anima-prompt; route pure scenes/backgrounds here.
+version: fourth-preview-slim
+description: Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art and in-scene NSFW behavior to anima-prompt; route pure scenes/backgrounds here; when characters are only accents but the environment dominates, use together with anima-prompt.
 ---
+
+> **前置依赖：使用本 skill 前必须同时加载 anima-prompt**（NEG_* 负面基线、ComfyUI 参数、生成流程、出图踩坑都在那里；本文件只写场景特化内容，冲突以 anima-prompt 为准）。
 
 ## When to Activate
 
@@ -15,9 +17,11 @@ Activate when the user asks to generate **scene/background/environment art**（�
 - **Pure scene / background / environment / map resource** -> this skill（`anima-scene-prompt`）
 - **Character-focused**（portrait, character sheet, character in scene）-> `anima-prompt`
 - **Character in a detailed scene, but character is the focus** -> `anima-prompt`（用模板 A-混 或 C）
+- **Character only as scale accent / environment is the main subject**（宏大废墟中的小人物、氛围背影）-> **本 skill 与 anima-prompt 并用**（场景层次/比例/画师用本 skill，角色块写法用 anima-prompt）
+- **Character NSFW behavior in a scene** -> `anima-prompt`（+anima-nsfw-prompt），本 skill 不接
 - If ambiguous: if you'd describe the character first -> character art（`anima-prompt`）；if you'd describe the place first -> scene art（here）。
 
-Do not activate for character portraits, character sheets, or realism（realism/照片类不在本套件范围）。
+Do not activate for character portraits, character sheets, video, 3D models, or non-Anima requests。
 
 ## Model basics
 
@@ -34,12 +38,12 @@ Same as `anima-prompt` — Anima Aesthetic fp16 (default), CFG 4, 30 steps, er_s
 
 ## 场景提示词结构
 
-Anima 场景图有两种可靠写法，按风格选：
+Anima 场景图有三种可靠写法，按风格选：
 
 ### 结构 1: 自然语言分层式（氛围场景 / 水彩 / 插画风）
 适用：有情绪、有氛围的场景，水彩/手绘风，概念图。
 ```
-[quality + safety + year + score], [style tags], [@artist]. [分号串联的画面层次: 调性→光线→环境主体→点缀人物→细节→景深→视角→质感→情绪收束]
+[quality + safety + year], [style tags], [@artist]. [分号串联的画面层次: 调性→光线→环境主体→点缀人物→细节→景深→视角→质感→情绪收束]
 ```
 **分号分层法（核心技巧）：** 用分号串联画面层次，每个分号片段聚焦一个层次，不分句。从 168 个例子提取的层次顺序：
 1. 整体调性 + 色板（`A vibrant yet muted palette dominated by soft pastels...`）
@@ -54,17 +58,19 @@ Anima 场景图有两种可靠写法，按风格选：
 
 **水彩/手绘 NL 句式骨架**：见 anima-prompt 模板 C 的水彩骨架（场景图是水彩风主战场，完整骨架在那里）。
 
-**"反摆拍"美学（从补充例子归纳）：** 场景图中人物不看向镜头是高频美学追求，用否定式定调表达：
+**"反摆拍"美学（从补充例子归纳，同 anima-prompt 模板 C 反摆拍）：** 场景图中人物不看向镜头是高频美学追求，用否定式定调表达：
 - `no direct eye contact with the viewer`
 - `characters focused on their own actions rather than deliberately looking at the camera`
 - `non-staged realism, unposed, candid`
 - `natural, unposed movements`
 - 适合生活感/日常/叙事氛围场景，区别于"摆拍"的 `looking at viewer`
-**"反摆拍"美学**：场景图中人物不看向镜头用否定式定调：`characters focused on their own actions rather than looking at the camera, non-staged realism, unposed, candid`（同 anima-prompt 模板 C 反摆拍）。
+### 结构 2: 标签堆叠式（元素明确 / 概念图 / 游戏背景）
+适用：元素明确、概念图、游戏背景——各元素按层次分组堆 tag，比 NL 更快更稳。
+```
 [quality + safety + year], [style tags], [environment: 建筑地形植被天气], [lighting], [composition], [depth], [atmosphere]
 ```
 标签按层次堆叠，每类一组。
-例（例子 14）：`masterpiece, best quality, score_9, score_8, absurdres, newest, majestic Japanese mountain shrine, ancient temple on a towering cliff, long stone staircase, torii gate, crystal-clear river, lush forest, cherry blossom trees in full bloom, falling sakura petals, moss-covered rocks, lanterns along the path, distant mountains, golden hour, dramatic clouds, warm sunlight, god rays, volumetric lighting, soft haze, cinematic composition, atmospheric perspective, highly detailed environment, painterly anime style, depth of field`
+例（例子 14）：`masterpiece, best quality, absurdres, newest, majestic Japanese mountain shrine, ancient temple on a towering cliff, long stone staircase, torii gate, crystal-clear river, lush forest, cherry blossom trees in full bloom, falling sakura petals, moss-covered rocks, lanterns along the path, distant mountains, golden hour, dramatic clouds, warm sunlight, god rays, volumetric lighting, soft haze, cinematic composition, atmospheric perspective, highly detailed environment, painterly anime style, depth of field`
 
 ### 结构 3: 剖面/解剖图（cutaway / cross-section）
 适用：需要同时展示建筑内部结构和外观的场景（店铺剖面、房屋截面、地下设施）。`cutaway`/`cross-section` 是标准 Danbooru 标签（从 135 例 base 例子中 2 例观察到，通用结构，非 base 专属）。
@@ -74,7 +80,7 @@ Anima 场景图有两种可靠写法，按风格选：
 关键标签：`cutaway` / `cross-section` 锁定剖面视角；内部用 `warm lighting, glowing` 突出，外部用环境光（`overcast` / `rain` 等）对比；内部人物作为点缀（`chef, cooking` / `customer, sitting, eating`）点明功能。
 例（例33 精简）：`masterpiece, best quality, safe, 3boys, scenery, cutaway, cross-section, outdoors, heavy rain, ramen shop built into steep hillside, stone stairs, moss, hanging lantern, noren, counter, bar stool, chef cooking, customer sitting eating, chimney smoke, wooden deck, lower level metal door, warm lighting vs grey rainy exterior, cozy atmospheric, high contrast, concept art, 2d illustration, flat color, thin lineart`
 
-**结构选择：** 氛围/情绪/水彩风 -> 结构 1；元素明确/概念图/游戏背景 -> 结构 2。不确定用结构 1（更稳）。
+**结构选择：** 氛围/情绪/水彩风 -> 结构 1；元素明确/概念图/游戏背景 -> 结构 2；剖面/内外同框（建筑内部+外观同画）-> 结构 3。不确定用结构 1（更稳）。
 
 ## 背景人物点缀
 
@@ -89,14 +95,19 @@ Anima 场景图有两种可靠写法，按风格选：
 - 人物小且模糊：`blurred figures in background` / `small figures in distance`
 - 人群：`crowd` / `bustling street` / `people walking`
 
-**场景图人群边界：** 场景图背景人群按"设计人群"处理，不套角色图排空（排空边界见 anima-prompt『负面提示词-排空边界』）；人群个体动作/视线链写法见 anima-prompt『公共场景与人群叙事纪律』。
+**场景图人群边界：** 场景图背景人群按"设计人群"处理，不套角色图排空（排空边界见 anima-prompt『负面提示词-排空纪律』）；人群个体动作/视线链写法见 anima-prompt『公共场景与人群叙事纪律』。
 
 ## 场景画师
 
-具体画师推荐表属作者个人实测数据，本分享版不收录——用 anima-prompt 画师策略的方法论自行实测建立。原则：
-- 场景画师选择不如角色那么关键——场景图更多靠描述本身
-- 水彩/氛围向需求可优先试水彩/手绘风画师 tag，叙事怀旧/光影通透/装饰风按题材自测
-- 不确定时不用画师（Anima 默认场景能力已足够）
+| 画师 | 风格 | 适用 |
+|---|---|---|
+| `@sw33t` | 水彩/手绘，氛围感强（**仅 base 实测，AES 未验证**——AES 首用必须同 seed 验证 1 张再批量；未验证时水彩场景用 `@acky bright` 或 watercolor/hand-drawn 风格 tag 组兜底，毒点名单见 anima-prompt 画师策略） | 氛围场景、雨景、城市、聚会 |
+| `@acky bright` | 水彩+线稿，叙事怀旧 | 怀旧场景、室内、街机厅、商店 |
+| `@shinkai_makoto` | 新海诚风，光影通透 | 天空、云、自然光景、黄昏 |
+| `@mucha` | 装饰风+superflat | 装饰性背景、海报背景 |
+| 无画师 | Anima 默认 | 简洁背景、概念图、地图资源 |
+
+场景画师选择不如角色那么关键——场景图更多靠描述本身。不确定时不用画师。
 
 ## 场景构图与视角
 
@@ -122,10 +133,10 @@ Anima 场景图有两种可靠写法，按风格选：
 
 ## 负面提示词
 
-见 `anima-prompt` 负面模板（NEG_* 档位基线 + A 最简 / E 空负面 / F 自然语言负面 变体）。场景图常用（速查）：
-- 标准：NEG 基线（`worst quality, low quality, lowres, blurry, jpeg artifacts, bad anatomy, watermark, artist name, signature` 等，按档位取用；Turbo/Base 负面可加 score_1/2/3，AES 不加）
-- 手部/复杂细节：NEG 基线 + 手部追加项（背景人物多时）
-- 氛围水彩：空负面（E 空负面，避免干扰风格）或 A 最简
+同步源：`anima-prompt` 负面节（NEG_* 基线，冲突以其为准）。**AES 正负面均不加 score_***（score_9/score_1 等仅 Turbo/Base 用）。场景图速查：
+- **标准（AES 默认）**：NEG_CORE 基线（`worst quality, low quality, artist name, blurry, jpeg artifacts, bad anatomy, bad hands, missing fingers, extra digits, fewer digits, fused fingers, watermark, signature, text, 3d, realistic, extra limbs, mirror, reflection, duplicate, futanari, gay, yaoi, shemale, femboy`）——**纯场景/雨景/水面删 `mirror, reflection, duplicate`**（反射纪律只防"含第二角色/多手页"的倒影重复肢，雨夜街道倒影/水面镜像是想要的美学，压掉=误杀，同 anima-prompt 删误杀项纪律）
+- **背景点缀人物多**：NEG_CORE 基础上加 `cloned face`——**不加 `multiple people`、负面不压 `strangers/bystanders/crowd`**（场景背景人群=设计人群豁免，渲染成匿名剪影，见 anima-prompt 排空纪律）
+- **氛围/水彩**：空负面（避免干扰风格，anima-prompt 明确水彩/氛围场景用空负面）或 A 最简（NEG_CORE 头部：`worst quality, low quality, artist name, blurry, jpeg artifacts`）
 
 ## 复杂场景模板（成品级 / 自动化美术素材）
 
@@ -140,7 +151,7 @@ ComfyUI 参数、提交、验证流程同 `anima-prompt`。用你的 ComfyUI 提
 **场景图 vs 角色图的关键差异：**
 - 场景图不加 `1girl`/`1boy`（除非有点缀人物）
 - 场景图强调 `wide shot`/`depth of field`/`atmospheric perspective`
-- 场景图画师偏水彩/氛围向，角色图画师偏还原向（选择方法见"场景画师"节与 anima-prompt 画师策略）
+- 场景图画师偏水彩/氛围（`@sw33t`/`@acky bright`），角色图画师偏还原（`@rella`/`@shirabi`）
 - 场景图比例偏横向，角色图偏竖向
 
 ## Output structure
