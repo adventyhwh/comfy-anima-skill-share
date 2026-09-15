@@ -1,7 +1,8 @@
 ---
 name: anima-prompt
-version: share
-description: Activates when the user wants to generate anime/illustration/character/art image assets, or mentions the Anima model (circlestone-labs/Anima). Turns a Chinese/English description or rough prompt into an Anima-optimized Danbooru-tag prompt, picks one of 3 prompt structures by scenario (standard / segmented / narrative), auto-selects canvas size/aspect ratio by content, handles NSFW/explicit content with proper tag structure and a curated action-tag library, decides whether to use artist chains (and which, by style-fit analysis), and submits to local ComfyUI (Aesthetic fp16 default, Turbo fp16 for fast iteration when explicitly requested) to produce the image. Route anime/illustration/characters to Anima; route realism/scenes/photos to Krea 2 (krea2-prompt skill). Includes model info, prompt templates, intent-based negative-prompt system, NSFW guidance, composition tag library, artist strategy, naming convention, and ComfyUI graph.
+metadata:
+  version: "share"
+description: "Activates when the user wants to generate anime/illustration/character/art image assets, or mentions the Anima model (circlestone-labs/Anima). Turns a Chinese/English description or rough prompt into an Anima-optimized Danbooru-tag prompt, picks one of 3 prompt structures by scenario (standard / segmented / narrative), auto-selects canvas size/aspect ratio by content, handles NSFW/explicit content with proper tag structure and a curated action-tag library, decides whether to use artist chains (and which, by style-fit analysis), and submits to local ComfyUI (Aesthetic fp16 default, Turbo fp16 for fast iteration when explicitly requested) to produce the image. Route anime/illustration/characters to Anima; route realism/scenes/photos to Krea 2 (krea2-prompt skill). Includes model info, prompt templates, intent-based negative-prompt system, NSFW guidance, composition tag library, artist strategy, naming convention, and ComfyUI graph."
 ---
 ## When to Activate
 

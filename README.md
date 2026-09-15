@@ -103,6 +103,21 @@ Anima（circlestone-labs/Anima）是开源的动漫向文生图模型。写出�
 
 这些是给 AI 智能体（如 Claude Code）的 skill 文件（Markdown 指令包），放入 `~/.claude/skills/<skill-name>/SKILL.md` 后按名调用。
 
+### 安装目录 / Installation layout
+
+推荐将 `v4/` 下的六个 skill 文件夹整体复制到 agent 的 skills 目录，保留各自的 `references/` 子目录。
+Copy the six skill folders under `v4/` into your agent's skills directory, including their `references/` subfolders.
+
+如需根目录的 second 版，请按下表复制并重命名；不要将四份文件放在同一个 skill 文件夹里，也不要同时安装两代同名 skill。
+For the legacy root version, copy and rename each file as below. Install only one version of each skill name.
+
+| 仓库文件 / Source | skills 目录内的目标路径 / Destination |
+|---|---|
+| `anima-SKILL.md` | `anima-prompt/SKILL.md` |
+| `nsfw-SKILL.md` | `anima-nsfw-prompt/SKILL.md` |
+| `doujin-SKILL.md` | `anima-doujin-plan/SKILL.md` |
+| `SKILL.md` | `anima-scene-prompt/SKILL.md` |
+
 ## Usage / 使用
 
 1. Single image: invoke `anima-prompt` (add `anima-nsfw-prompt` for NSFW, `anima-scene-prompt` for pure scenes).

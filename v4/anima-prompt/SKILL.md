@@ -1,7 +1,8 @@
 ---
 name: anima-prompt
-version: fourth-preview-slim
-description: Anima 模型（circlestone-labs/Anima）提示词层的权威主线。把模糊输入转成 Anima 优化的 Danbooru-tag prompt（模板 A/B/C），含三条核心公理、负面意图预测、人物一致性、道具/视线/多角色/多人纪律、画师策略、ComfyUI 参数与生成流程。长篇 doujin（≥10p）构思层走 anima-doujin-plan（本文件为权威主线，变体冲突时以本文件为准）。NSFW 解构方法论走 anima-nsfw-prompt（不另起模板）。纯场景/背景/环境/地图资源走 anima-scene-prompt；跑批/对比/审计/交付走 anima-workflow。任何 Anima 生图请求本文件与专项 skill 同时加载，冲突以本文件为准。
+metadata:
+  version: "fourth-preview-slim"
+description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主线。把模糊输入转成 Anima 优化的 Danbooru-tag prompt（模板 A/B/C），含三条核心公理、负面意图预测、人物一致性、道具/视线/多角色/多人纪律、画师策略、ComfyUI 参数与生成流程。长篇 doujin（≥10p）构思层走 anima-doujin-plan（本文件为权威主线，变体冲突时以本文件为准）。NSFW 解构方法论走 anima-nsfw-prompt（不另起模板）。纯场景/背景/环境/地图资源走 anima-scene-prompt；跑批/对比/审计/交付走 anima-workflow。任何 Anima 生图请求本文件与专项 skill 同时加载，冲突以本文件为准。"
 ---
 
 # 定位与激活

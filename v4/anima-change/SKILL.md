@@ -1,7 +1,8 @@
 ---
 name: anima-change
-version: fourth-preview-p
-description: 纯指导型呈现方法论 skill——不执行、不写 prompt 细节（模板/参数/生成归 anima-prompt）。MUTATE 仅显式调用：用户点名 anima-change/MUTATE/画面突变/眼前一亮/记忆点/这帧要让人记住/不够炸/得体违反时使用，推“这一帧凭什么被记住”（先吸引力、再一次得体违反），产出承接列 MUTATE 标注 + ◆。不自动注入流水线、不做默认增强。轻量特化分支 skill。
+metadata:
+  version: "fourth-preview-p"
+description: "纯指导型呈现方法论 skill——不执行、不写 prompt 细节（模板/参数/生成归 anima-prompt）。MUTATE 仅显式调用：用户点名 anima-change/MUTATE/画面突变/眼前一亮/记忆点/这帧要让人记住/不够炸/得体违反时使用，推“这一帧凭什么被记住”（先吸引力、再一次得体违反），产出承接列 MUTATE 标注 + ◆。不自动注入流水线、不做默认增强。轻量特化分支 skill。"
 ---
 
 ## 定位
