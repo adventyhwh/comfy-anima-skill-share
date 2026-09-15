@@ -1,7 +1,8 @@
 ---
 name: anima-scene-prompt
-version: fourth-preview-slim
-description: Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art and in-scene NSFW behavior to anima-prompt; route pure scenes/backgrounds here; when characters are only accents but the environment dominates, use together with anima-prompt.
+metadata:
+  version: "fourth-preview-slim"
+description: "Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art and in-scene NSFW behavior to anima-prompt; route pure scenes/backgrounds here; when characters are only accents but the environment dominates, use together with anima-prompt."
 ---
 
 > **前置依赖：使用本 skill 前必须同时加载 anima-prompt**（NEG_* 负面基线、ComfyUI 参数、生成流程、出图踩坑都在那里；本文件只写场景特化内容，冲突以 anima-prompt 为准）。

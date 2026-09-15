@@ -1,7 +1,8 @@
 ---
 name: anima-scene-prompt
-version: share
-description: Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art to anima-prompt; route pure scenes/backgrounds here.
+metadata:
+  version: "share"
+description: "Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art to anima-prompt; route pure scenes/backgrounds here."
 ---
 
 ## When to Activate

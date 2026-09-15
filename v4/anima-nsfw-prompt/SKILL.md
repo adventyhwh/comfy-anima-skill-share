@@ -1,7 +1,8 @@
 ---
 name: anima-nsfw-prompt
-version: fourth-preview-slim
-description: NSFW特化补充 for anima-prompt skill. ONLY triggers when generating NSFW/sensitive/nsfw/explicit/erotic/色情/黄色/R18/勾人/露骨/成人/H场景/黄油/eroge/hentai content. Optimizes the NSFW fragment already inside anima-prompt (does NOT route to a separate template - templates/negative/tags/censorship all stay in anima-prompt). Provides what anima-prompt lacks, deconstruction-focused: NSFW event deconstruction method (erotic-core analysis: find-core -> core-to-visual -> core-nature-posture -> dual-axis -> differentiate -> innovate, generalizes to ANY event not just hypnosis), XP-direction deconstruction reference (core + visual anchors, non-exhaustive), atmosphere tips, common pitfalls, and a few net-new NSFW artists. Lean supplement, not a competing template.
+metadata:
+  version: "fourth-preview-slim"
+description: "NSFW特化补充 for anima-prompt skill. ONLY triggers when generating NSFW/sensitive/nsfw/explicit/erotic/色情/黄色/R18/勾人/露骨/成人/H场景/黄油/eroge/hentai content. Optimizes the NSFW fragment already inside anima-prompt (does NOT route to a separate template - templates/negative/tags/censorship all stay in anima-prompt). Provides what anima-prompt lacks, deconstruction-focused: NSFW event deconstruction method (erotic-core analysis: find-core → core-to-visual → core-nature-posture → dual-axis → differentiate → innovate, generalizes to ANY event not just hypnosis), XP-direction deconstruction reference (core + visual anchors, non-exhaustive), atmosphere tips, common pitfalls, and a few net-new NSFW artists. Lean supplement, not a competing template."
 ---
 
 ## 定位

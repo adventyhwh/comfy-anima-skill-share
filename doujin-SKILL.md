@@ -1,7 +1,8 @@
 ---
 name: anima-doujin-plan
-version: share
-description: 黄漫/长篇（>10p）套图的剧本设计与分镜设计。仅在用户要求生成黄漫（eroge doujinshi/长篇 H 套图/堕落弧线漫画，页数 >10p）时触发。负责：分幕结构、事件链设计、情节波折、视觉锚点、分镜（镜头语言）、节奏分配、模板混用规划。单张生图/短测试(<10p)不触发，走 anima-prompt + anima-nsfw-prompt。产出为完整分镜表（每页: 幕/页码/标题/事件/镜头/模板），再落脚本。
+metadata:
+  version: "share"
+description: "黄漫/长篇（超过10p）套图的剧本设计与分镜设计。仅在用户要求生成黄漫（eroge doujinshi/长篇 H 套图/堕落弧线漫画，页数 超过10p）时触发。负责：分幕结构、事件链设计、情节波折、视觉锚点、分镜（镜头语言）、节奏分配、模板混用规划。单张生图/短测试(不足10p)不触发，走 anima-prompt + anima-nsfw-prompt。产出为完整分镜表（每页: 幕/页码/标题/事件/镜头/模板），再落脚本。"
 ---
 
 ## 定位
