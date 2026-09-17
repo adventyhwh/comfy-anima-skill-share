@@ -1,13 +1,13 @@
 ---
 name: anima-nsfw-prompt
 metadata:
-  version: "fourth-preview-slim"
-description: "NSFW特化补充 for anima-prompt skill. ONLY triggers when generating NSFW/sensitive/nsfw/explicit/erotic/色情/黄色/R18/勾人/露骨/成人/H场景/黄油/eroge/hentai content. Optimizes the NSFW fragment already inside anima-prompt (does NOT route to a separate template - templates/negative/tags/censorship all stay in anima-prompt). Provides what anima-prompt lacks, deconstruction-focused: NSFW event deconstruction method (erotic-core analysis: find-core → core-to-visual → core-nature-posture → dual-axis → differentiate → innovate, generalizes to ANY event not just hypnosis), XP-direction deconstruction reference (core + visual anchors, non-exhaustive), atmosphere tips, common pitfalls, and a few net-new NSFW artists. Lean supplement, not a competing template."
+  version: "fourth-preview-slim-c1"
+description: "NSFW特化补充 for anima-prompt skill. ONLY triggers when generating NSFW/sensitive/nsfw/explicit/erotic/色情/黄色/R18/勾人/露骨/成人/H场景/黄油/eroge/hentai content. Optimizes the NSFW fragment already inside anima-prompt (does NOT route to a separate template - templates/negative/tags/censorship all stay in anima-prompt). Provides what anima-prompt lacks, deconstruction-focused: NSFW event deconstruction method (erotic-core analysis: find-core → core-to-visual → core-nature-posture → dual-axis → differentiate → innovate, generalizes to ANY event not just hypnosis), XP-direction deconstruction reference (core + visual anchors, non-exhaustive), atmosphere tips, and a few net-new NSFW artists. Lean supplement, not a competing template."
 ---
 
 ## 定位
 
-**前置依赖：使用本 skill 前必须同时加载 anima-prompt**——本 skill 只补它没有的 NSFW 特化内容，不路由、不另起模板；结构/模板A-C/负面词/一致性/标签库/安全等级/bar censor 全用 anima-prompt 的（冲突以 anima-prompt 为准）。以解构为主：①事件解构（色气核心分析法，会推理任何事件怎么画）②氛围tips ③XP参考库 ④常见坑 ⑤画师补充。**分阶段套图级别**：按安全等级从 sensitive 起步逐级递进（sensitive→nsfw→explicit），余韵段回非 explicit 收尾。
+**前置依赖：使用本 skill 前必须同时加载 anima-prompt**——本 skill 只补它没有的 NSFW 特化内容，不路由、不另起模板；结构/模板A-C/负面词/一致性/标签库/安全等级/bar censor 全用 anima-prompt 的（冲突以 anima-prompt 为准）。以解构为主：①事件解构（色气核心分析法，会推理任何事件怎么画）②氛围tips ③XP参考库 ④画师补充（常见坑操作清单归 anima-prompt，本文件只留指针）。**分阶段套图级别**：按安全等级从 sensitive 起步逐级递进（sensitive→nsfw→explicit），余韵段回非 explicit 收尾。
 
 ## NSFW 事件解构（色气核心分析法）
 
@@ -72,27 +72,9 @@ description: "NSFW特化补充 for anima-prompt skill. ONLY triggers when genera
 3. **姿态与核心性质不符** -- 恶堕用瘫软 -> 抹掉"主动堕落"读成催眠，应主动迎合（见核心性质③）。
 怀表写法：`pocket watch on chain`（不写链子像个粉盒）+ 表盘朝角色/背面朝观众（`watch face toward her, watch back toward viewer`）+ 晃动用 `watch at apex of swing, motion lines`；怀表入控后退场（见 tip8）。常识改变：画得像正常 NSFW -> 缺"觉得这很正常"的反差，色气在日常场景中做露骨行为（大街/教室/食堂）+ `smiling`，别忘写 setting。
 
-## NSFW 常见坑（实测总结）
+## NSFW 常见坑
 
-1. **手部多手** -- 避免自然语言描述双手做不同动作（"one hand... the other hand..."），用标签式 `hands clawing at sheets`（双手同动作），负面加 `extra hands, multiple hands`（详细手部负面查主 skill 问题预测表）。
-2. **提示词过长** -- 遵守 anima-prompt 的 clip 注意力硬纪律（正面 ~150-300 词/负面 ~60-120 词，硬上限 450 词），NSFW 页尤其容易叠堆——氛围标签选 2-3 条配合，调味料不是主菜；体位/动作/表情/体液贴核心，多余修饰砍掉。
-3. **场景/时间不一致** -- 分阶段套图统一场景和时间，靠角色状态变化推进，不要每张换光线色调。
-4. **服装漂移 / 分阶段一致性** -- 外观模板（发/眼/肤/体型/服饰）逐字复制到每张，禁止改写或省略；服装状态只能按行为轴显式递进（着衣->敞开->褪），每阶段写死——不能 S2 敞开 S3 又拉上。**远景表情**：采用 wide/远景可用的经验，不因景别预先禁用表情标签或强制改特写；以脸部是否清晰可读为准。既往异常眼部记录保留为个例，原因未确认；出现异常时先检查提示词冲突，并用同配置多 seed 复核，不能仅凭单张失败归因于远景。
-5. **歧义标签** -- `frozen` 会被理解为冰冻（冰块），时间停止用 `time stop, motionless` + NL（"body locked in place as if time stopped"）。能用更精确的 tag/NL 替代就别用有歧义的（NL 替换仅限消歧上下文句；关键特征（表情/姿态/道具）一律用 tag，见坑10）。
-  - **5.1 `spiral` 歧义**：非入控页写 `spiral`（光效/图案）会触发圈圈眼——spiral → spiral eyes 是强关联。非入控页光源/光效用 `swirl, concentric glow, curved light trails`；`spiral eyes` 只留给入控页本尊。负面压 `spiral eyes, swirly eyes`。**光效量级控制**：光效/发光是氛围不是主体——写 `small glow, held in his hand`，禁 `filling the foreground`/`bathing the whole frame` 级描述（会把持道具行为挤出焦点、glow 渲染成全幅金圈）。
-  - **5.2 明喻字面化**：叙事段比喻（`like a puppet`）会被模型字面渲染成真丝线。护栏：喻体不得落在角色身体/衣饰/肢体上（`like a trophy` 在角色之外安全）；禁 `invisible, string, glass` 类字面诱发词；明喻只放模板C情绪收尾层不放 tag 层。
-  - **5.3 职业服饰默认配件**：`nun`/`knight`/`priest` 等职业词自带标志性配件（wimple 头巾/头盔/白领）——不需要时负面压 `headdress, wimple, veil, hood` 或正面 `no head covering`。"不要X"必须显式编码，不能只靠剧本口头说。
-  - **歧义词/明喻的负面抑制**：正面用了可能被字面渲染的歧义/文学词，推测模型会画出什么（丝线/头巾/圈圈眼）主动压掉：**AES（CFG 4.0）直接加负面提示词**（负面节点有效）；**Turbo（CFG 1.0）必须用 NegPip 负权重放正面**（`(wimple:-1.5), (veil:-1.5), (puppet strings:-1.5)`，`extract_negative_weights` 自动拆到负面）——低 CFG 下负面节点几乎无效，只有正面负权重有效。
-6. **外部手的归属** -- 描述外部角色手操作（脱衣/摆位/触碰）时，明确写 `faceless male hands`，且不要同时给女主手部动作标签，否则模型画出 4+ 只手。
-  - **6.1 动作动词强度**：`groping` 渲染弱（揉胸画成托胸）、`lips around penis` 画成闭嘴露牙——关键动作加具象动词+状态：揉胸 `faceless male hands squeezing her breasts, fingers pressing into her flesh`；口交 `mouth open wide, lips sealed around him, cheeks hollowed, sucking`（cheeks hollowed 是口交标准姿态标签）。**接触判定类动作**：①**接触点命名显式身体部位，禁代词**——`her mouth around his penis` 不写 `around him`（代词被读成吻/舔衣服），补相对位置 `kneeling between his legs` + 目视 `looking up at him` + 体位指向 `his hips forward`；②**接触物必须露出**——口交/舔/手交写 `penis exposed, pants pulled down`/`male nude`（不写 = 模型按穿衣态画成隔裤吸/隔衣舔）；③**判定机位必做**——低位服务默认 `pov, from above` 俯视 + 她仰头回应（`from the side` 旁侧平铺最易歧义）；④规范动作标签 `fellatio, deepthroat` 必写；⑤负面压 `kiss, french kiss, lips pressed together`；⑥**同部位一状态**——嘴/眼/手每部位只能一个状态：`biting lip`（咬唇闭口）禁与 `tongue out/drooling`（吐舌张口）共存，互斥词混入 = 人体畸形；表情词性须与档位字面库对齐（`biting lip` 是抵抗档词，禁入沉醉/高潮行）。
-  - **6.2 口交页禁用 `gritting teeth`**：它是"画出牙齿"的直接诱因。口交期牙齿情绪用 `humiliated expression, furrowed brow, tears, drool at the corner of her mouth` 替代。
-  - **6.3 体型比例显式化**：异种族/配角体型用**显式相对高度**（`waist-high to her, reaches her hip`）或参照物，禁 `small`/`tiny` 笼统词（被字面执行成迷你）。多角色页写 `height difference` 时同样用相对高度句锁定。
-7. **冻结态表情锁定** -- 时间停止下角色表情锁定在定格瞬间，不能新增（不能 mid-freeze 皱眉/流泪；眼泪必须是定格前就有的、冻在脸上）。
-8. **临床标签去色气** -- `medical examination` 作为动作 tag 会产生过于临床的结果（像真看病）。用 setting 标签（`clinic interior, examination table`）+ 具体动作 tag（`spread legs, restrained`）替代，保留色气。
-9. **自定义道具一致性** -- 叙事核心依赖非现实道具时，用简单可描述的形状（`silver ring, round purple gem`）而非复杂描述（`serpentine curves with etched runes`）；复杂道具跨阶段会漂移或消失，生僻词不在编码器词表内。**五要素锁定**：形状+大小+位置+颜色+表面细节各定一个固定词（`small round pink gem` 大小+形状+颜色 + `on a cord around her neck` 位置 + 表面细节如表盘 `roman numeral dial`），逐字复用；发光/状态词只用一个（`glowing soft pink`），不写 bright/swinging/bouncing 波动词、布袋词（sachet）——都会导致大小/位置/颜色失控。**归属双侧编码 + 发光色锁定**：多人页道具/武器归属写"正面归属句 + 反面排除句"（`his hand raising it, her hand off the chain`——faceless 剪影无持物手时模型把道具归给画面唯一有手的人）；同帧发光物 ≤1、发光色独立于环境光（`pink gem glowing pink against warm golden light`），神圣误读负面 `halo, divine glow, holy aura, golden gem`。
-  - **9.1 道具可见性裁决**：机位使必含道具/部位不可见时（背面看不到胸前饰品）——三选一：①省略不画（看不到没必要画，主手段）②分版图 inset（模型只擅长正面，背面属性需展示时）③换机位；**禁挪位**（破坏位置要素）。
-10. **表情用 tag 不用文学描述** -- `a vacant serene half-smile` 模型无法解析，用 Danbooru tag `empty smile, half-closed eyes, light blush` 才稳定。生僻文学词（serpentine/vacant/serene/etched）效果不确定，编码器可能不认识。原则：**角色关键特征（表情/姿态/道具）一律用 tag，NL 只补氛围/情绪/关系**。
-11. **双人行为无男方处理** -- 含双人行为 tag（cowgirl/fellatio/sex/missionary 等）时必须明确男方处理方式（`1boy, faceless male` 或 `faceless male hands` + 接触位置 或 `pov` 或 `silhouette`），否则模型自行生成完整男性角色，导致串角和画面失控。
+操作坑清单（手部多手/提示词过长/场景时间不一致/服装漂移/歧义标签/外部手归属/冻结态/临床标签/自定义道具/表情 tag/双人行为男方处理等，含 spiral 歧义、明喻字面化、动作动词强度、口交机位、体型比例等子条）统一维护在 **anima-prompt「NSFW 常见坑（实测精华）」**，本 skill 不重复。解构层的误区见上文「常见误区（三错型）」。
 
 
 ## NSFW 画师决策

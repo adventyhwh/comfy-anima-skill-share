@@ -1,7 +1,7 @@
 ---
 name: anima-scene-prompt
 metadata:
-  version: "fourth-preview-slim"
+  version: "fourth-preview-slim-c1"
 description: "Activates when the user wants to generate scene/background/environment/map art assets with Anima — pure scenes with no main character, or background art where people are only accents (game backgrounds, loading screens, map tiles, environment concept art, atmosphere/mood illustrations). Turns a Chinese/English description into an Anima-optimized scene prompt using layered natural-language or tag-stack structures, and submits to local ComfyUI (Aesthetic fp16 default). Route character-focused art and in-scene NSFW behavior to anima-prompt; route pure scenes/backgrounds here; when characters are only accents but the environment dominates, use together with anima-prompt."
 ---
 
@@ -135,7 +135,7 @@ Anima 场景图有三种可靠写法，按风格选：
 ## 负面提示词
 
 同步源：`anima-prompt` 负面节（NEG_* 基线，冲突以其为准）。**AES 正负面均不加 score_***（score_9/score_1 等仅 Turbo/Base 用）。场景图速查：
-- **标准（AES 默认）**：NEG_CORE 基线（`worst quality, low quality, artist name, blurry, jpeg artifacts, bad anatomy, bad hands, missing fingers, extra digits, fewer digits, fused fingers, watermark, signature, text, 3d, realistic, extra limbs, mirror, reflection, duplicate, futanari, gay, yaoi, shemale, femboy`）——**纯场景/雨景/水面删 `mirror, reflection, duplicate`**（反射纪律只防"含第二角色/多手页"的倒影重复肢，雨夜街道倒影/水面镜像是想要的美学，压掉=误杀，同 anima-prompt 删误杀项纪律）
+- **标准（AES 默认）**：NEG_CORE 基线（串文见 anima-prompt 负面节）——**纯场景/雨景/水面删 `mirror, reflection, duplicate`**（反射纪律只防"含第二角色/多手页"的倒影重复肢，雨夜街道倒影/水面镜像是想要的美学，压掉=误杀，同 anima-prompt 删误杀项纪律）
 - **背景点缀人物多**：NEG_CORE 基础上加 `cloned face`——**不加 `multiple people`、负面不压 `strangers/bystanders/crowd`**（场景背景人群=设计人群豁免，渲染成匿名剪影，见 anima-prompt 排空纪律）
 - **氛围/水彩**：空负面（避免干扰风格，anima-prompt 明确水彩/氛围场景用空负面）或 A 最简（NEG_CORE 头部：`worst quality, low quality, artist name, blurry, jpeg artifacts`）
 

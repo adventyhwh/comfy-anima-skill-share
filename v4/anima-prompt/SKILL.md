@@ -1,7 +1,7 @@
 ---
 name: anima-prompt
 metadata:
-  version: "fourth-preview-slim"
+  version: "fourth-preview-slim-c1"
 description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主线。把模糊输入转成 Anima 优化的 Danbooru-tag prompt（模板 A/B/C），含三条核心公理、负面意图预测、人物一致性、道具/视线/多角色/多人纪律、画师策略、ComfyUI 参数与生成流程。长篇 doujin（≥10p）构思层走 anima-doujin-plan（本文件为权威主线，变体冲突时以本文件为准）。NSFW 解构方法论走 anima-nsfw-prompt（不另起模板）。纯场景/背景/环境/地图资源走 anima-scene-prompt；跑批/对比/审计/交付走 anima-workflow。任何 Anima 生图请求本文件与专项 skill 同时加载，冲突以本文件为准。"
 ---
 
@@ -21,7 +21,7 @@ description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主�
 
 **公理 3 · 字面化一切**：任何比喻/文学词/抽象状态都会被渲染成最常见的具象物件（frozen→冰块、puppet→提线木偶+丝线、like a trophy→真陈列品、pig→真猪鼻）。推论：①角色关键特征（表情/姿态/道具）一律用 **Danbooru tag**，NL 只补氛围/情绪/关系，不重复标签已有信息；②明喻只放模板 C 情绪收尾层，不放 tag 层；③负面主动压字面化产物。
 
-**基础预算（clip 注意力硬纪律）**：正面 **~150-300 词**（Anima 2B 实测 131-235 词高质量，硬上限 ~450 词）；负面 **~60-120 词**。砍词优先级从低到高：环境道具堆砌 → 氛围 NL 扩写 → 动作修饰词 → 表情冗余词；**不可砍**：质量头+安全档+画师、角色块（一致性锚点）、核心动作/表情。负面同理：基线模板+意图预测追加，不加"保险"词。
+**基础预算（clip 注意力硬纪律）**：正面 **~150-300 词**（Anima 2B 实测 131-235 词高质量，硬上限 ~450 词）；负面 **~60-120 词**。砍词优先级从低到高：环境道具堆砌 → 氛围 NL 扩写 → 动作修饰词 → 表情冗余词；**不可砍**：当前模板所需的质量头/安全档、已选定的画师、角色块（一致性锚点）、核心动作/表情；无画师与 A-极简按各自规则，不强行补齐。负面同理：基线模板+意图预测追加，不加"保险"词。
 
 **Tier 0 单帧可读性（先于一切档位）**：单页只允许 **1 主动作 + 1 主导表情 + 1 空间关系**；超过=拆页或砍动作。分镜/脚本同守。
 
@@ -49,18 +49,18 @@ description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主�
 **模板复杂度**：默认模板 C（叙事）；NSFW 有 H 行为默认模板 B；对话中简短测试用 A，定稿升级 C。纯场景转 anima-scene-prompt。
 
 ## 2. 理解主体（画什么？气质是什么）
-气质是核心推断轴——构图/光线/表情/画师都围绕它。已知角色 → 补外观（发色/眼睛/服装/招牌 pose），按**实际性格**推气质；原创 → 从描述提气质；场景 → 提情绪基调；多主体 → 各自描述外观+动作+判断关系。
+气质是核心推断轴——构图/光线/表情/画师都围绕它。已知角色 → 只补确定知道的外观（发色/眼睛/服装/招牌 pose，不确定维度按“名字即锚点”省略），按**实际性格**推气质；原创 → 从描述提气质；场景 → 提情绪基调；多主体 → 各自描述外观+动作+判断关系。
 气质→写法对照：锋芒/傲娇/腹黑 → cinematic lighting, confident expression, sharp focus；温婉/清冷/治愈 → soft lighting, gentle expression, portrait；暗黑/哥特 → chiaroscuro, dark background, low saturation, intense/empty eyes；热血/张扬 → dynamic pose, dutch angle, dramatic lighting；日常/萌系 → soft daylight, smile, warm palette, outdoors；神秘/氛围 → atmospheric, volumetric lighting。气质不明确 → 默认柔和。**角色外观不锁固定偏好**（避免批量同质化），按题材自由定。
 **上下文线索很重要**：项目语境（如题材语境是"修女"→按暗黑克苏鲁修女处理）优先于预设偏好。
 
 ## 3. 推断缺失 + 推断原则
 按用途+气质补齐：比例（角色 3:4/全身 2:3/场景 16:9/加载 21:9/头像 1:1）、构图视角（立绘=upper body/looking at viewer，NSFW=按体位）、光线（见气质表）、表情（按气质/动作档位）、安全等级（默认 safe，含 NSFW 词升档）、画师（高人气无画师/冷门按画师策略）、seed（探索随机/对比固定）、质量词（AES 不加 score_*，Turbo/Base 加）、负面（按档位基线+问题预测）。
-**推断原则**：①优先满足主要意图，次要可省；②不确定时选合理默认**不反问**，直接生成，用户不满意再调；③注意上下文。
+**推断原则**：①优先满足主要意图，次要可省；②非关键缺项选合理默认，不例行反问；缺项会改变主要意图时再澄清。按用户请求交付提示词或实际生图，不能把“只写提示词”当成生图授权；③注意上下文。
 
 # 提示词结构（按场景选模板）
 
 **Tag 规则**：小写、空格不用下划线（仅 score_* 保留下划线）；Danbooru/Gelbooru 冲突取 Gelbooru 版；画师 tag 加 @ 前缀（无 @ 效果很弱）；权重比 SDXL 高（(chibi:2)）；纯 NL 至少 2 句。
-**Tag 顺序（必守）**：`[quality/meta/year/safety] [1girl/1boy/1other] [character] [series] [artist] [appearance] [pose] [setting] → NL 补充`。标签定主体，NL 只补氛围/情绪/关系（1-2 句封顶），不重复标签信息。**不要写互斥标签**（from front + from behind、solo + 1boy）。
+**Tag 顺序（模板 A 默认）**：`[quality/meta/year/safety] [1girl/1boy/1other] [character] [series] [artist] [appearance] [pose] [setting] → NL 补充`。模板 B/C 按各自分层组织；质量词仅在开头出现一次，A-极简按其简式。标签定主体，NL 只补氛围/情绪/关系（1-2 句封顶），不重复标签信息。**不要写互斥标签**（from front + from behind、solo + 1boy）。
 
 ## 模板 A：标准（角色立绘/肖像/场景互动）
 - **A-简**（纯标签）：`masterpiece, best quality, [safety], [highres], [year], 1girl, [character (series)], [series], [@artist], [hair], [eyes], [body], [clothing], [pose], [expression], [setting], [composition], [lighting]`
@@ -70,7 +70,7 @@ description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主�
 
 ## 模板 B：分段式（动态构图/NSFW/多角色）
 用**换行分段**，每段一个语义层（模型训练见过大量换行分段）。**NSFW 和动态构图最常用。**
-``
+```
 [quality + safety + censor]
 [composition: 视角/构图/景深]
 [character: 1girl/1boy, 角色名, 外观]
@@ -79,18 +79,18 @@ description: "Anima 模型（circlestone-labs/Anima）提示词层的权威主�
 [setting: 场景/环境/光线]
 [text: 文字/音效 (如需)]
 [series]
-``
+```
 **setting 段不能省**（不写场景=默认纯白背景，NSFW 尤其需要）。`BREAK` 可代替换行但有被模型当画面文字烘焙到纸/卷轴上的风险——**优先真换行分段**；必须用 BREAK 时负面加 `text, english text, letters, words`，且 BREAK 附近避免放文字载体道具。
-**六行骨架（长篇 doujin 场景页参考）**：①质量头（质量+档位+censor，只出现一次）②camera 行 `from {front/side/above/below/pov}, {shot}, {dutch angle|dynamic pose|shallow depth of field|dramatic lighting}` ③角色+服装状态行（人物块固定段 + torn/damaged/removing 状态词头）④动作行（体位/接触点显式）⑤表情/效果行（三档字面库选档）⑥环境行（**地点+2-3 道具+光源+色调**，必要时用短 NL 消歧/收氛围）。骨架价值是"每层一个语义"而非固定格式。
+**六行骨架（长篇 doujin 场景页参考）**：①质量头（质量+档位+censor，只出现一次）②camera 行 `from {front/side/above/below/pov}, {shot}, {dutch angle|dynamic pose|shallow depth of field|dramatic lighting}` ③角色+服装状态行（固定身份段 + 当前服装状态；写当前结构与位置，不用 removing 代替结果）④动作行（体位/接触点显式）⑤表情/效果行（三档字面库选档）⑥环境行（**地点+2-3 道具+光源+色调**，必要时用短 NL 消歧/收氛围）。骨架价值是"每层一个语义"而非固定格式。
 
 ## 模板 C：叙事模板（成品级/自动化/默认）
 用**分号分层法**：分号串联画面层次，每片聚焦一个层次，不分句。比换行更连贯，比标签堆叠更精确。
 **混合形态（doujin 封面/终章/状态转换页）**：tag 头（质量头+档位+完整角色块）→ `{场景标记};` → NL 正文（分号分层：姿态动作；表情；环境+光源）→ camera 注 → 情绪收尾 `evoking an atmosphere of X`/`conveying X.`。
 写法要点：**角色四件套**（外观+服装每件+动作+表情，单角色 50-80 词）；**否定式定调**（rather than/avoids/not 排除歧义）；**"反摆拍"美学**（characters focused on their own actions rather than looking at the camera, non-staged realism, unposed, candid）；**具体>笼统**（limited to 6 hues: electric cyan, burnt orange… > vibrant colors）；**情绪收尾**（最后 1-2 个分号片段必是 mood/atmosphere）；**画师/风格前置**（长描述前先 @画师锁定画风）。
 完整例（C；演示分号分层，实际按画师策略与 AES 纪律——AES 不加 score_*）：
-``
+```
 masterpiece, best quality, safe, highres, newest, anime coloring, @rella. A gentle half-elf girl with very long silver hair and purple eyes, detailed round eyes with large pupils, pointy ears, wearing a white and purple dress with cross-lacing and a crystal pendant; standing in a sunlit garden with soft diffused light casting gentle shadows; looking at the viewer with a gentle smile; shallow depth of field, low-angle portrait composition; rendered with delicate brushwork and soft pastel tones; evoking a serene, ethereal atmosphere of quiet grace.
-``
+```
 
 # 质量标签 / 安全等级 / 负面提示词
 
@@ -107,12 +107,12 @@ masterpiece, best quality, safe, highres, newest, anime coloring, @rella. A gent
 ## 负面提示词（意图预测式，非固定清单）
 **原则：负面不是保险清单，而是根据正面可能引发的问题预测性选择。** 每个负面组件解决一个具体问题。先选基线模板，再按问题预测表追加。
 **基线唯一 = 三档完整负面模板**（单图/短篇与长篇 doujin 通用）：
-``
+```
 NEG_CORE = worst quality, low quality, artist name, blurry, jpeg artifacts, bad anatomy, bad hands, missing fingers, extra digits, fewer digits, fused fingers, watermark, signature, text, 3d, realistic, extra limbs, mirror, reflection, duplicate, futanari, gay, yaoi, shemale, femboy
 NEG_SAFE  = CORE + lowres, nudity, multiple people, cloned face, spiral eyes, swirly eyes
 NEG_NSFW  = CORE + deformed, disfigured, young, minor, multiple people, cloned face, censored, bar censor, mosaic censoring, covered, spiral eyes, swirly eyes
 NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # explicit 档正面 uncensored
-``
+```
 **简化变体**：**A 最简**（简单立绘/肖像、无复杂手部）= NEG_CORE 头部（worst quality, low quality, artist name, blurry, jpeg artifacts）；**E 空负面**（像素/复古风、分段式 NSFW 正面够精确、极简标签式、水彩/氛围场景、Aesthetic+极简正面）；**F 自然语言负面**（高级，Aesthetic 尤其有效，如 "This image suffers from low resolution... bad anatomy and six fingers... watermarks and signatures."）。B/C/D 已并入 NEG_*，勿单独用。手部重追加 `(bad hands:1.6), (extra digits:1.4), (6 fingers:1.5)`。
 **负面针对性纪律（必做两件事）**：①**反向保护**——正面关键动作/姿态给反向词防误读；②**删误杀项**——通用模板里压制正面在场元素的项要删（场景有散落衣物时删 clothing/bra/panties；正面 ahegao 看镜头时删 looking at viewer；正面有镜子时删 mirror）。**正负冲突扫描（落脚本必做）**：负面不得压制正面已在场的元素——原则：**负面压的是"画面不应出现的东西"，不是"画面正在要求的东西"**。
 **排空纪律（集中）**：排空只压"未设计的意外人物"。**非群交页**——正面 `no other people` + 负面 `strangers, bystanders`（禁 multiple people 替代）；**显式群交/多角色页**——保留 `multiple people, cloned face` 防克隆/串角；**设计人群**（分镜已规划的宾客/围观剪影）——不写 no other people、负面不压 strangers/bystanders/crowd，按"人群/阵型 + silhouette 可见性"渲染成模糊剪影。
@@ -144,20 +144,20 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 
 **权重进阶**：严重问题加权 (bad hands:1.6), (6 fingers:1.5), (censored:1.5)；风格强推 (3d:1.5), (realistic:1.5)；组加权 (worst quality, low quality, normal quality:1.4)。
 
-**决策流程（落脚本必走）**：①定模型 → AES 不加 score_*/Turbo+Base 加；②选基线 → 按档位 NEG_SAFE/NSFW/EXPL，简单立绘 A 最简、像素/氛围 E 空；③扫正面 → 按问题预测表追加；④严重问题加权；⑤检查冲突 → 要黑条不能负面加 bar censor、要彩色不能负面加 watercolor；⑥正负冲突扫描；⑦道具可见性扫描（见道具纪律）。
+**决策流程（落脚本必走）**：①定模型 → AES 不加 score_*/Turbo+Base 加；②选基线 → 按档位 NEG_SAFE/NSFW/EXPL，简单立绘 A 最简、像素/氛围 E 空；③扫正面 → 按问题预测表追加；④严重问题加权；⑤正负冲突扫描 → 要黑条不能负面加 bar censor、要彩色不能负面加 watercolor；⑥道具可见性扫描（见道具纪律）。
 **Fixed prefixes**：AES 默认 `masterpiece, best quality, [safe/sensitive/nsfw/explicit], `；Turbo/Base `masterpiece, best quality, score_9, score_8, score_7, [档位], `。
 
 # 人物一致性（一次生图保证角色统一）
 
 同一角色的多张图靠提示词约束保证一致，不依赖 img2img。核心：**每个外观维度写具体值，禁止概括词**。
 
-**名字即锚点（公开动漫角色 vs 原创角色，规则相反）**：模型只记忆**公开动漫作品**的角色（rem (re:zero)、saber (fate)、mikasa (aot) 等）——**公开角色名字即锚，已足够**：角色名 (作品名) 逐字复用即可锁外观，**不必遵守全维度人物一致性纪律**（你往往记不全它所有维度）。只写**确定知道**的维度（如用户给定的发色/瞳色/签名配饰），**不确定的维度一律不写**——写了会画错（如给穿高跟凉鞋的角色补靴子、给圣徒编一套不存在的衣服）。**OC 正好相反**：名字对模型无效（mio/alicia 自造名不锁任何外观），所以 OC 才需要**全维度固定块**（发色+发型+瞳色+肤色+体型+签名配饰+服装）逐字复用；OC 的名字只作文档/分镜表的键，不进 prompt 当锚。
+**名字即锚点（公开动漫角色 vs 原创角色，规则相反）**：模型只记忆**公开动漫作品**的角色（rem (re:zero)、saber (fate)、mikasa (aot) 等）——**公开角色名字即锚，已足够**：角色名 (作品名) 逐字复用即可锁外观，**不必遵守全维度人物一致性纪律**（你往往记不全它所有维度）。只写**确定知道**的维度（如用户给定的发色/瞳色/签名配饰），**不确定的维度一律不写**——写了会画错（如给穿高跟凉鞋的角色补靴子、给圣徒编一套不存在的衣服）。**OC 正好相反**：名字对模型无效（mio/alicia 自造名不锁任何外观），所以 OC 才需要**固定身份块**（发色+发型+瞳色+肤色+体型+签名特征）逐字复用，服装与可变配饰另按当前状态填写；OC 的名字只作文档/分镜表的键，不进 prompt 当锚。
 
 **维度封闭清单（签名优先）**：身高/体型胸围/肤色/发型发色/眼色眼型/眉（只锁颜色+粗细，不锁形状）/刘海（必须具体锁定）/服饰每件/衣领·袖长·裙摆/内搭里衣/袜有无色长/鞋靴长型/发饰位色/首饰/武器唯一位置/贯穿道具四要素。**签名优先**：识别 1-2 个定义辨识度的"签名特征"用规范 tag 钉死；低先验微特征（泪痣/眼线/睫毛/眉形）不写裸 tag，改 NL 钉位句或干脆不锁。
 - **发型/发色**：`silver hair, very long hair, blunt bangs, side ponytail`。体位大变页（仰躺/俯身）是发型漂移高发位，重申发型形态句+负面排除漂移。**发长双锚**：强先验分类词作主 tag（long hair）+ 体部位 NL 确认句（hair reaching her waist）并存——禁把主 tag 换成先验弱的细词（只写 waist-length hair 整批读成短发）。
-- **眼色/眼型**：`purple eyes, detailed eyes, round eyes, large pupils`；**肤色**：fair skin/pale skin/tan/dark skin（不写会随机）；**体型/胸围**：slim + small breasts（必须写）+ 身高比例（tall/petite/height difference）。
+- **眼色/眼型**：`purple eyes, detailed eyes, round eyes, large pupils`；**肤色**：fair skin/pale skin/tan/dark skin（不写会随机）；**体型/胸围**：按角色设定明确体型与胸围（slim + small breasts 仅是示例，非统一取值；公开角色未知维度仍不编造）+ 身高比例（tall/petite/height difference）。
 - **服饰（每件+颜色+具体款式）**：white dress shirt, red ribbon, blue pleated skirt, black thighhighs；单件再拆领/袖/裙摆；外套+内搭时里衣显式；**深色大面积服装写死色名+负面防漂白**（black nun habit + 负面 white habit, white robe, pale dress——场景主色场会把深色服装洗浅，亮场景页必查）。
-- **武器（战斗角色必写）**：具体款式+银刃；武器**三态固定块**（in hand/on her back/on the ground beside her）每页必选一态；**唯一位置锁定**：正面写死位置+补 no sword at her hip + 负面 sword on hip, scabbard, sword on back, duplicate weapon；状态用静态短句。
+- **武器（战斗角色按道具可见性写）**：具体款式+银刃；必要且可见时，从武器**三态固定块**（in hand/on her back/on the ground beside her）选当前一态，不可见或非必要时按道具纪律省略；**唯一位置锁定**：正面写死位置+补 no sword at her hip + 负面 sword on hip, scabbard, sword on back, duplicate weapon；状态用静态短句。
 - **腿足**：靴/鞋写死长短+样式；袜子维度显式（no socks/black knee-high socks/white thighhighs）；裸体页显式 bare legs + 负面 stockings, pantyhose, thighhighs。
 - **头部遮盖**：无头巾=正面 hair fully visible, no head covering + 负面 headscarf, wimple, veil, hood。
 - **发饰/配件**：锁款式+颜色+图案（brown headband with triangle pattern）+ 负面 bandana, white headband。**首饰/身体标记**：每件锁款式+材质+颜色。
@@ -165,14 +165,14 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 - **规范 tag 纪律**：禁伪 tag（sharp thin eyebrows 合并 token）；鬓发 sidelocks（不写 long sidelocks）；有 blunt bangs 时删冗余 straight hair。
 - **氛围/气质**：用具体 pose/表情锚定（looking at viewer, gentle smile, soft lighting，不是 elegant mood）。
 
-**面部特征预算与门控**：特写页安全 ~8 个面部 tag，远景页 ~2 个。身份层每页逐字不变；眼线/睫毛/装饰仅特写页发。**表情页纪律**：面部块每页恒定，表情只通过**追加恰好一个尾部 tag**表达，不在表情页改面部块。
+**面部特征预算与门控**：特写页安全 ~8 个面部 tag，远景页 ~2 个。身份特征写法保持一致，按本帧可见性展开；眼线/睫毛/装饰仅特写页发。**表情页纪律**：面部块每页恒定，表情只通过**追加恰好一个尾部 tag**表达，不在表情页改面部块。
 
 **人物块两段式（长篇 doujin 用，落脚本每页强制）**：
-- 第一段固定模板**逐字复用**：**公开动漫角色 = 角色名 (作品名) 即可**（名字即锚；只补确定知道的维度，不确定的不写）；**OC = 不写名 + 全维度固定块**（发色+发型+瞳色+detailed eyes+刘海锁定+fair skin+体型+胸围+签名配饰+服装，15-20 tag 固定顺序）。
-- 第二段"状态增量槽"只允许追加，禁止改写第一段。
-- **全本逐字复用，无例外**：explicit/H/特写/动作页**不得**把第一段缩成"角色名+当前状态"（`1girl, 名字, nude, collar` = 不合格，无视觉锚）；特写页可**增**面部细节 tag，但**不可删**第一段任何一项（含刘海/签名配饰/肤色）。
-- **签名配饰全本在场**：定义辨识度的发饰/配件（如 twin hair ribbons）必须出现在**每一页**，不得前几页有、后面断掉。
-- **刘海锁定全本**：每页同一刘海写法（blunt bangs 等），禁某几页写某几页漏。
+- 第一段固定模板**逐字复用**：**公开动漫角色 = 角色名 (作品名) 即可**（名字即锚；只补确定知道的维度，不确定的不写）；**OC = 不写名 + 固定身份块**（发色+发型+瞳色+detailed eyes+刘海锁定+肤色+体型+胸围+签名特征，按角色设定取具体值并固定顺序；fair skin 是示例，不统一肤色；服装转入第二段）。
+- 第二段“当前状态槽”填写本页服装、姿势、表情、道具与可变配饰；状态变化时替换旧状态，禁止累加互斥的新旧状态。第一段稳定身份不随意改写，已在剧本中明确发生的外观变化按版本复用。
+- **身份写法全本复用**：OC 不得只写自创名+当前状态而省略视觉锚；公开角色仍按“名字即锚点”的例外。每页保留该帧可见的身份锚点，特写可增面部细节；服装、已变更配饰与不可见道具按当前状态及可见性处理，不把旧状态硬留在固定块里。
+- **签名配饰跨页连续**：定义辨识度的发饰/配件（如 twin hair ribbons）在设定中持续存在；本帧可见时不得漏写，不可见时省略画面描述。剧情已移除或更换时记录新状态，不同时要求旧配饰仍佩戴。
+- **刘海锁定全本**：可见时每页同一刘海写法（blunt bangs 等），禁无故漏写；镜头完全不可见时不为展示刘海改变机位。
 - 罕见公开角色兜底：系列名在人物块和页尾各写一遍。
 
 **泛称→具体化对照（高频踩坑）**：
@@ -200,7 +200,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 **服装纪律（含移除双锚）**：**服装状态转换双锚定**——脱/卸类写"**现在露出的部位显式** + **脱掉的件去向在场**"（topless, bare chest + breastplate and pauldrons discarded on the ground），禁只写"脱掉的件去向"——对着装先验强的角色（骑士甲胄/制服/修女袍），只写护甲散落而漏写裸露，模型把护甲仍画在身上（实测）。**服装变化写清楚即够**：每页穿什么/露什么/脱掉的件去向显式写，禁靠语境暗示（泡澡页不写"毛衣已脱"就穿毛衣泡温泉）。**半脱多结构件按件写状态**：系带裙的半脱=系带+肩带+裙摆多件，每件单独给状态动词+已不在原位；动作依赖状态时动作与状态同帧写死，禁只写动作不写状态（状态不成立则动作无对象，被替换成提裙摆/拨头发/捏细物）。**敞开/裸露类**：角色块默认内搭在裸/露乳页必须显式移除（red skirt front open to her waist, no chest binding, her breasts bare）。**跨角色服装（A 的衣穿 B 身）**：归属主体（his long black coat）+ 穿着状态（wrapped around her bare shoulders）+ 原主在场（his hands closing the collar behind her）。
 **元素在场性（升维到角色）**：角色/印记/核心道具只按"该帧是否在场"写完整块——缺席不写块；solo 页禁携带其他角色外观块；本页不应出现的印记显式排除（her skin clear and unmarked, no sigil）。
 
-# 道具纪律（集中；源头：原"发光质感与道具材质先验"+一致性+分版图+原 doujin 执行纪律道具条）
+# 道具纪律
 
 **第一原则：道具按镜头可见性写，禁硬凹在场**。道具只在画面能看到/该页承担剧情功能时写；构图不可见/遮挡时**省略不画**。判别："这页去掉这个道具，剧情/动作还成立吗？"成立就省略。
 
@@ -222,7 +222,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 **分版图 inset 写法**：主格写主导画面 + 小格写 inset 内容（主画面+inset 小格）；落脚本保留 multiple views、负面去 comic；小格只承载新信息，格数写死。分镜表需分版图时在"单帧事件"写主画面+inset 小格。
 **画中次人物（照片/画像/屏中像）**：介质标注（a woman inside the small photograph）+ 特征与主角**显式相反**（发色/眼色反向）+ 主角特征重申（her own pink hair and red eyes unchanged）+ 负面防融合（merged face, same face, duplicate person）。**画中画内容与完成度双锚定**：早期态 mostly blank white canvas with a single faint charcoal contour line + 负面 finished portrait, detailed painting；成品态 a fully finished portrait of her in the exact same reclining pose + 负面 blank canvas, empty canvas；真人模特与画布画像双体共存写"空间在场"锚（the model standing before the canvas, her body apart from the painted surface）。
 
-# 视线纪律（集中；源头：原 anima 公共场景/多角色/NSFW + 原 doujin N3 视线条）
+# 视线纪律
 
 **视线逐页单选（落脚本必查；实测：全本默认 looking at viewer 导致该看镜头的页反而没看）**：每页视线**恰好一个目标**（朝镜头 XOR 看人 XOR 看物），按页型定：①**必须朝镜头**（looking at viewer/toward the camera）：POV 服务页她仰头、ahegao/heart 符号页（facing camera）、终态空洞朝镜头页；②**必须看人**：对视页（双方朝向互指）、胁迫/对峙页（看向施动者）；③**必须看物**：觉醒页锁触发物（+not at the camera）、沉浸/余韵页（gazing at X rather than the camera）。**禁默认 looking at viewer**（非镜头页写了=摆拍污染全本）；**禁互斥视线并存**（模型随机取一）；**该指定的页禁留空**（留空=模型自由发挥，符号页常丢 facing camera）。负面 looking at viewer 只用于②③类页。
 **无法对视时用头位三态**（faceless 男/背对/远处目标，对视无落点=回落看镜头）：写 looking down/up/straight ahead，禁写"对视/看他"式指向无脸者的短语。
@@ -231,7 +231,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 **POV 归属必须明确**：pov 裸写有歧义。**读者 POV**：pov, first person view + 前景出现"读者自己的手"；**角色 POV**：her point of view, from behind her shoulder / looking at her own reflection，且**禁止前景出现读者手**。写 POV 必须含该视角主体的**前景部件**，否则模型直接第三人称化。**POV 页"仰头看他"="抬头朝镜头"**：支配者 POV 下她抬头对视方向就是镜头方向，直接写 looking up toward the camera。
 **观察/窥视类页空间排布**：只写 watching him 不够——模型把观察者画前景、被观察者画背景，层叠导致视线不成立。必写**空间排布三要素**：①谁前景谁背景；②视线方向穿过空间；③空间关系一帧难成立时用分版图（主格=观察者表情特写 + inset=观察者 POV 里的被观察者）或改观察者背对镜头构图。
 
-# 多角色/多人纪律（集中；源头：原 anima 多角色场景/公共场景 + 原 doujin N3/执行纪律 prompt 条）
+# 多角色/多人纪律
 
 **每角色必须单独描述外观+动作（否则串角）**：每角色独立四件套 + `girl:`/`boy:` 前缀锚定描述块；完整外观写在**一个连续段**内不散落；**不要在同一行混写两角色标签**；solo focus 时非聚焦角色只写局部。**防串角纪律**：同发色用长度/发型/配件显式区分——双女主/母女/姐妹同框**禁只差一种发色深度**，至少拉发型轮廓/眼型/体型/服装剪影 2 维（实测栗棕 vs 深棕同框必串）；负面加 cloned face, extra limbs, extra arms。
 **多人原创角色难区分→用知名角色锚定（实测有效）**：Anima 对多人原创角色特征区分有限，但对知名动漫角色记忆强（名字即锁特征）。多人页优先替换成高人气知名角色（女仆位=蕾姆 Re:Zero/玛修 Fate；骑士位=Saber；法师位=晓美焰）；写法：锚点用角色名 (作品名) 起头 + 保留核心特征词；选角标准=题材适配+人气高+外观差异大（至少两维反向）。跨作品混搭可行，同作品更稳。单人/双人原创效果好时不必借。
@@ -272,18 +272,18 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 **动作标签按事件分层选**（体位/动作/效果/特殊玩法/身体细节，完整词表查 Gelbooru）：体位 missionary/cowgirl position/reverse cowgirl position/doggystyle/spoon position/paizuri/fellatio/deepthroat/buttjob；动作 deep penetration/penetration/creampie/oral/groping/skirt lift/panty pull；效果 ass ripple/bouncing breasts/jiggle/trembling/arching back/stomach bulge；身体 nipples/erect nipples/puffy areolae/large areolae/cameltoe/skindentation；特殊玩法 restrained/tape gag/arms behind back/chained/mass orgy/mmm threesome。表情 ahegao/ohogao/fucked silly/rolling eyes/uneven eyes/heart eyes/bedroom eyes/embarrassed。
 **表情三档字面库（字面库；选档规则归 doujin-plan N10）**：抵抗/羞耻档 teary eyes, biting lip, heavy blush, gritting teeth, furrowed brows；沉醉档 half-closed eyes, blush, open mouth, tongue out, drooling, heart-shaped pupils；高潮档 ahegao, rolling eyes, tongue out, heart-shaped pupils, drooling, sweaty, convulsing。**终局空洞配方**：empty smile, half-closed eyes, heart-shaped pupils, light blush + 自相矛盾收尾（no expression/no resistance）。
 **核心体液**：cum/cum in mouth/cum on face/cum on body/cum on hair/excessive cum/saliva/drooling/pussy juice/pussy juice trail/sweat/shiny skin/very sweaty/oiled。
-**进阶技法**：分段填充顺序（模板 B）= censor 顶行→动作/朝向→角色+身体→表情→体液簇→HCG 特效块→系列→质量尾。HCG 特效子词库：2way-afterimage, afterimage, motion blur, motion lines, impact lines, onomatopoeia, sound effects, speech bubble, japanese text + 压制非日文 (english text, engrish text, chinese text, korean text:-1)。**tags+NL 澄清**：空间关系模糊时保留 tag 栈+追加一句 NL 锁定接触点。**NSFW 专属负面**：disembodied penis, floating penis, barbie doll anatomy, minor。
+**进阶技法**：分段填充顺序（模板 B）= 质量+safety+censor 顶行→构图/朝向→角色+身体→动作→表情/体液簇/HCG 特效块→环境→文字（如需）→系列；不再追加质量尾。HCG 特效子词库：2way-afterimage, afterimage, motion blur, motion lines, impact lines, onomatopoeia, sound effects, speech bubble, japanese text + 压制非日文 (english text, engrish text, chinese text, korean text:-1)。**tags+NL 澄清**：空间关系模糊时保留 tag 栈+追加一句 NL 锁定接触点。**NSFW 专属负面**：disembodied penis, floating penis, barbie doll anatomy, minor。
 **吊缚/悬吊页防"勒颈/自缢"误读**：绳的附着点必须钉死+否定排除颈部：the rope attached to her wrists bound together above her head, none of the rope around her neck + 负面 hanging by neck, noose, suicide, rope around neck, strangulation。失神吊缚页补气色对冲词（blush on her cheeks, warm skin tone）。
 **NSFW 常见坑（实测精华）**：
 1. **手部多手**：避免 NL 描述双手做不同动作（one hand... the other hand...），用标签式 hands clawing at sheets（双手同动作），负面加 extra hands, multiple hands。
 2. **提示词过长**：遵守 clip 预算，NSFW 页尤其容易叠堆——氛围标签选 2-3 条配合，调味料不是主菜。
 3. **场景/时间不一致**：分阶段套图统一场景和时间，靠角色状态变化推进，不要每张换光线色调。
-4. **服装漂移**：外观模板逐字复制到每张，禁止改写或省略；服装状态只能按行为轴显式递进（着衣→敞开→褪），每阶段写死——不能 S2 敞开 S3 又拉上。
-5. **歧义标签**：frozen 会被理解为冰冻（冰块），时间停止用 time stop, motionless + NL（body locked in place as if time stopped）。spiral 非入控页写会触发圈圈眼——光源/光效用 swirl, concentric glow, curved light trails；spiral eyes 只留给入控页本尊（详见 nsfw 意识状态轴）。**5.3 职业服饰默认配件**：nun/knight/priest 自带标志性配件（wimple/头盔/白领）——不需要时负面压 headdress, wimple, veil, hood 或正面 no head covering。
-6. **外部手的归属**：描述外部角色手操作（脱衣/摆位/触碰）时明确写 faceless male hands，且不要同时给女主手部动作标签，否则模型画出 4+ 只手。**6.1 动作动词强度**：groping 渲染弱（揉胸画成托胸）、lips around penis 画成闭嘴露牙——关键动作加具象动词+状态：揉胸 faceless male hands squeezing her breasts, fingers pressing into her flesh；口交 mouth open wide, lips sealed around him, cheeks hollowed, sucking。**接触判定类动作**：①接触点命名显式身体部位禁代词（her mouth around his penis 不写 around him），补相对位置 kneeling between his legs + 目视 looking up at him + 体位指向 his hips forward；②接触物必须露出（penis exposed, pants pulled down/male nude，不写=模型按穿衣态画成隔裤吸）；③判定机位必做——低位服务默认 pov, from above 俯视+她仰头回应（from the side 旁侧平铺最易歧义）；④规范动作标签 fellatio, deepthroat 必写；⑤负面压 kiss, french kiss, lips pressed together；⑥**同部位一状态**——嘴/眼/手每部位只能一个状态（biting lip 禁与 tongue out/drooling 共存，互斥词混入=人体畸形）。**6.2 口交页禁用 gritting teeth**（"画出牙齿"的直接诱因），用 humiliated expression, furrowed brow, tears, drool at the corner of her mouth 替代。**6.3 体型比例显式化**：异种族/配角体型用显式相对高度（waist-high to her, reaches her hip）禁 small/tiny 笼统词。
+4. **服装漂移**：稳定身份块按人物一致性规则复用，服装写当前状态并替换旧状态。逐页变化遵循已定弧线，不能无因回跳；升温/日常弧的整理穿回等既有例外按 doujin-plan G4/N6，不把单向变化规则套给所有故事。**远景表情**：采用 wide/远景可用的经验，不因景别预先禁用表情标签或强制改特写，以脸部是否清晰可读为准；既往异常眼部记录保留为个例，原因未确认——出现异常时先检查提示词冲突，并用同配置多 seed 复核，不能仅凭单张失败归因于远景。
+5. **歧义标签**：frozen 会被理解为冰冻（冰块），时间停止用 time stop, motionless + NL（body locked in place as if time stopped）。能用更精确的 tag/NL 替代就别用有歧义的（NL 替换仅限消歧上下文句；关键特征一律用 tag，见坑10）。正面用歧义/文学词时主动压字面化产物（AES 加负面节点、Turbo 用 NegPip 负权重，见负面节权重语法）。**5.1 spiral 歧义**：非入控页写 spiral（光效/图案）会触发圈圈眼——spiral → spiral eyes 是强关联；非入控页光源/光效用 swirl, concentric glow, curved light trails，spiral eyes 只留给入控页本尊（三态区分详见 anima-nsfw-prompt 意识状态轴），负面压 spiral eyes, swirly eyes；光效量级控制见道具纪律-发光。**5.2 明喻字面化**：叙事段比喻（like a puppet）会被字面渲染成真丝线——护栏：喻体不得落在角色身体/衣饰/肢体上（like a trophy 在角色之外安全），禁 invisible, string, glass 类字面诱发词，明喻只放模板 C 情绪收尾层不放 tag 层。**5.3 职业服饰默认配件**：nun/knight/priest 等职业词自带标志性配件（wimple 头巾/头盔/白领）——不需要时负面压 headdress, wimple, veil, hood 或正面 no head covering，"不要 X"必须显式编码，不能只靠剧本口头说。
+6. **外部手的归属**：描述外部角色手操作（脱衣/摆位/触碰）时明确写 faceless male hands，且不要同时给女主手部动作标签，否则模型画出 4+ 只手。**6.1 动作动词强度**：groping 渲染弱（揉胸画成托胸）、lips around penis 画成闭嘴露牙——关键动作加具象动词+状态：揉胸 faceless male hands squeezing her breasts, fingers pressing into her flesh；口交 mouth open wide, lips sealed around him, cheeks hollowed, sucking（cheeks hollowed 是口交标准姿态标签）。**接触判定类动作**：①接触点命名显式身体部位禁代词（her mouth around his penis 不写 around him），补相对位置 kneeling between his legs + 目视 looking up at him + 体位指向 his hips forward；②接触物必须露出（penis exposed, pants pulled down/male nude，不写=模型按穿衣态画成隔裤吸）；③判定机位必做——低位服务默认 pov, from above 俯视+她仰头回应（from the side 旁侧平铺最易歧义）；④规范动作标签 fellatio, deepthroat 必写；⑤负面压 kiss, french kiss, lips pressed together；⑥**同部位一状态**——嘴/眼/手每部位只能一个状态（biting lip 禁与 tongue out/drooling 共存，互斥词混入=人体畸形）；表情词性须与档位字面库对齐（biting lip 是抵抗档词，禁入沉醉/高潮行）。**6.2 口交页禁用 gritting teeth**（"画出牙齿"的直接诱因），用 humiliated expression, furrowed brow, tears, drool at the corner of her mouth 替代。**6.3 体型比例显式化**：异种族/配角体型用显式相对高度（waist-high to her, reaches her hip）禁 small/tiny 笼统词。
 7. **冻结态表情锁定**：时间停止下表情锁定在定格瞬间，不能新增（眼泪必须是定格前就有的）。
 8. **临床标签去色气**：medical examination 作为动作 tag 会过于临床。用 setting 标签（clinic interior, examination table）+ 具体动作 tag（spread legs, restrained）替代。
-9. **自定义道具一致性**：叙事核心依赖非现实道具时用简单可描述的形状（silver ring, round purple gem），五要素锁定（形状+大小+位置+颜色+表面细节各定一个固定词），逐字复用；发光/状态词只用一个；归属双侧编码+发光色锁定（见道具纪律）。
+9. **自定义道具一致性**：叙事核心依赖非现实道具时用简单可描述的形状（silver ring, round purple gem）而非复杂描述（serpentine curves with etched runes）；复杂道具跨阶段会漂移或消失，生僻词不在编码器词表内。五要素锁定（形状+大小+位置+颜色+表面细节各定一个固定词，如 small round pink gem + on a cord around her neck + roman numeral dial），逐字复用；发光/状态词只用一个（glowing soft pink），不写 bright/swinging/bouncing 波动词、布袋词（sachet）——都会导致大小/位置/颜色失控。**归属双侧编码+发光色锁定**：多人页道具/武器归属写"正面归属句+反面排除句"（his hand raising it, her hand off the chain——faceless 剪影无持物手时模型把道具归给画面唯一有手的人）；同帧发光物 ≤1、发光色独立于环境光（pink gem glowing pink against warm golden light），神圣误读负面 halo, divine glow, holy aura, golden gem（归属句与可见性裁决详见道具纪律）。
 10. **表情用 tag 不用文学描述**：a vacant serene half-smile 无法解析，用 empty smile, half-closed eyes, light blush。生僻文学词（serpentine/vacant/serene/etched）效果不确定。
 11. **双人行为无男方处理**：含双人行为 tag（cowgirl/fellatio/sex/missionary 等）时必须明确男方处理方式（1boy, faceless male 或 faceless male hands+接触位置 或 pov 或 silhouette），否则模型自行生成完整男性角色。
 
@@ -306,7 +306,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 
 ## 何时用/不用
 - **高人气/经典/近年热门角色 → 无画师**（Anima 训练充分，画师反而干扰还原，阿库娅/由乃实测）
-- **长篇 doujin（>10p）→ 先按画师策略判断本子适合的画师组合（冷门还原/特定风格/NSFW 特化），无明确对应用 `@mika pikazo, @redjuice` 兜底；多本同批时各本用不同组合防跨本同质化**（原"全本统一硬基线 `@mika pikazo, @redjuice`"降为兜底默认；2026-08-09 同 seed A/B 实证保留：B/H 动作页加画师后质量对齐 C 页、画风统一，同本内画师链全本统一、不可中途更换，模板差异只保留在 NL vs tag-stack 结构）。
+- **长篇 doujin（≥10p）→ 先按画师策略判断本子适合的画师组合（冷门还原/特定风格/NSFW 特化），无明确对应用 `@mika pikazo, @redjuice` 兜底；多本同批时各本用不同组合防跨本同质化**（原"全本统一硬基线 `@mika pikazo, @redjuice`"降为兜底默认；2026-08-09 同 seed A/B 实证保留：B/H 动作页加画师后质量对齐 C 页、画风统一，同本内画师链全本统一、不可中途更换，模板差异只保留在 NL vs tag-stack 结构）。
 - 冷门角色/Anima 学不准 → 画师辅助还原；需要特定风格 → 对应风格画师；NSFW → 可用 NSFW 画师；无明确风格要求 → 无画师。
 ## 核心画师（实测；其余气质/风格靠实测补充）
 温婉/清冷/精灵系→@rella（+ detailed eyes, round eyes, large pupils）；强个性/傲娇/腹黑/张扬→@hiten；神秘/氛围/魔女系→@shirabi；深色/哥特/冷调→@mochizuki kei（Trigger 系灰调表征偏差，用对角色出彩）；热血/红色系→@modare/@namie；萌系→@askzy；少女向精致→@yoneyama mai（+ normal neck, small head 修正长脖子）；水彩/场景→@sw33t/@acky bright；superflat→@mucha；像素→@capcom_vs_snk2/@motocross saito；线稿→@imkay 3；NSFW→@cowani/@sogushstyle/@spd/@c0ff1ng/@shexyo；现代日常/人妻/成熟→@tatsunami youtoku（人妻NTR专精，天然带 mature female/aged up 链）、@yukiyoshi mamizu、@kyuuba melo、@a5h1ma；韩漫风现代室内→@dishwasher1910/@nixeu；水彩日常→@acky bright。
@@ -314,6 +314,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 ## 画师串纪律
 画师串 **≤2 优先**；三画师及以上风格先验抢占背景渲染权重（实测纯白背景概率上升）。组合画师=画师名逗号连接。四画师组合一律不用（实测都一般）。
 **多画师串唯一保留：`@mika pikazo, @redjuice`**（已验证兜底组合）。**其余双/三画师组合一律不用**（2026-09-03 决策：历史三画师配方未经拆解验证，且 pixiv 叙事批 31 张实测单画师效果优于组合；单画师风格锚最干净，默认永远先单画师，确需组合必须先同 seed 对比重验）。**"先单画师"适用范围：画师策略有合适单画师对应时**（题材→画师速查命中即用该画师）；**长篇 doujin 无明确对应时不先试单画师再回退，直接用已验证组合 `@mika pikazo, @redjuice` 兜底**——该组合是大多数无对应场景的优解（见"何时用/不用"）。
+**低权重垫底画师无效（2026-09-09 同 seed A/B 实测）**：给组合串加第三画师低权重"垫底稳定"（如 `(ciloranko:0.6)`）不可行——Anima 低于 1.0 的正权重几乎无效，5 组三画师配方 × 有无垫底（同 prompt 同 seed）垫底版无一胜出，个别组还稀释主效果（askzy×as109 色气组垫底版脸变平、气色变淡）；结论=确需组合时直接两画师裸串（不写权重或 ≥1.0），禁止低权重第三画师。同轮旁证：①三画师串纯白背景风险在强场景锚（霓虹巷/机库/站台）下未触发，背景全渲染；②`@wlop` 翻车再次确认——`wlop×mochizuki kei` 黑衣暴雨场景整图漂成黑白灰半写实，修复靠正面色锚+负面 monochrome/greyscale 或弃 wlop，垫底救不回。
 ## 题材→画师速查
 重H→a5h1ma/nekojira（单选）；现代日常人妻→dishwasher1910/tatsunami youtoku；熟女→sogush；英气→mika pikazo/hiten；场景/氛围→rella；安全调和→hiten；叙事/喜剧/动作向（2026-09-02 pixiv 批实测中选）→hiten/modare/yoneyama mai/dishwasher1910/rella；shirabi/mochizuki kei/acky bright 只用于纯氛围单图（叙事题材实测压可读性）。
 ## 关键结论（实测精华）
@@ -323,7 +324,7 @@ NEG_EXPL  = NEG_NSFW + extra hands, multiple hands, barbie doll anatomy   # expl
 4. 系统风格特征无法靠 seed-rolling 修复（yoneyama 脖子长是画师签名）——用相反 tag 补偿但注意 whack-a-mole，接受小瑕疵。
 5. 多画师配方必须拆解对比验证（逐个去掉画师验证是否真有贡献）。
 6. 病娇/微表情气质靠 pose tag 锚定 >> 表情 tag。
-7. 画师链用随机 seed——永远不从一个 seed 判画师好坏。
+7. 探索画师链可用随机 seed；对比不同画师时复用同一组 seed 与其余参数。永远不从一个 seed 判画师好坏。
 8. 避免半写实/油画风画师（@wlop 在 Anima 动漫域翻车）。
 > 完整全场景实测普查数据量太大，已外置作者本地参考文件，不内联本 skill。兜底组合与速查表见上。
 
@@ -344,7 +345,7 @@ ComfyUI 默认 ComfyUI_00001_.png 无用。设 filename_prefix：`anima_<subject
 # Generate via local ComfyUI
 
 **首选便捷执行器**：用任意封装 ComfyUI API 的提交脚本（推荐自写一个：封装 submit+poll+verify，CLI 参数 --prompt --negative --width --height --seed --prefix），缺失时 fallback 官方 workflow 模板（拖官方 workflow 示例图进 ComfyUI 加载），或查脚本源码（API 格式 {"prompt": {node_id: {class_type, inputs}}}）。
-流程要点：
+流程要点（仅用户要求实际生图时执行；只要提示词或分镜时不探测、不启动、不提交）：
 1. **Probe**：GET http://127.0.0.1:8188/system_stats；down 则启动 ComfyUI（--listen 127.0.0.1；低显存设备加 --lowvram 防 VAE decode OOM；先清理僵尸 python 进程释放 VRAM）。
 2. **Submit**：POST /prompt {"prompt": graph, "client_id": "anima"}。成功 = {"prompt_id":..., "number":N, "node_errors":{}}——空 node_errors = 验证通过，非空才是真失败。
 3. **Poll**：GET /history/{prompt_id} 直到 status.completed；读 outputs[*].images[*]。
@@ -352,9 +353,9 @@ ComfyUI 默认 ComfyUI_00001_.png 无用。设 filename_prefix：`anima_<subject
 5. **Verify（读图）**：Read PNG 直接评价画面质量（多模态）；stat 文件大小 + 解析 PNG tEXt prompt 块可作参数辅助验证。
 6. **Report**：最终路径+参数给用户，让他们看图。
 
-# Output structure (for every Anima request)
+# Output structure（按用户要求的交付范围）
 
 1. **Request** - restate what the user wants.
 2. **Prompt** - 完整 Danbooru-tag 正面 prompt 一个可复制块；负面独立块。说明用了哪个模板（A-C）和哪个负面档位及原因。
 3. **Params** - size（含比例理由）、sampler/steps/CFG、seed、画师链（含理由）、filename prefix。
-4. **Generate** - ComfyUI 在跑则提交并报告保存路径；否则告知如何启动。没有文件落盘就不算成功。
+4. **Generate** - 仅实际生图请求执行上方 Probe→Submit→Poll→Locate→Verify→Report；服务未运行按 Probe 启动，启动受限或失败时报告原因与启动方法。只有生图请求以实际文件落盘为成功标准；只要提示词/分镜时，交付对应文本即可。
