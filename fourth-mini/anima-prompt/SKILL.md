@@ -1,0 +1,155 @@
+---
+name: anima-prompt
+metadata:
+  version: fourth-mini
+description: 为 Anima（circlestone-labs/Anima）编写或改进 Danbooru-tag 提示词。提供模板 A/B/C、质量与安全标签、负面提示词、构图、画师选择和通用参数。只有请求包含原创角色（OC）时，才读取本 skill 的 references/oc.md 并对 OC 应用身份与跨图一致性规则；公开角色默认以“角色名 (作品名)”为身份锚。
+---
+
+# 适用范围与路由
+
+用户明确使用 Anima 生图、要求 Anima 提示词，或要把分镜转成 Anima prompt 时启用本 skill。纯背景/环境优先联用 anima-scene-prompt；成人画面联用 anima-nsfw-prompt；长篇 doujin 的故事与分镜先由 anima-doujin-plan 规划；运行与交付可联用 anima-workflow。本 skill 负责逐张图的提示词结构、画师与参数，不替代这些专项任务。
+
+## OC 条件路由
+
+**角色路由在写 prompt 前确定：**
+
+- **公开角色**：使用规范的“角色名 (作品名)”作为默认身份锚。角色名通常已承载原作外观；不例行补发色、眼色、服装、全维度设定或人物一致性块。仅添加用户明确指定的可见变化、场景所需的当前状态，或确实要纠正的偏差。不确定的原作细节不要编造。
+- **原创角色（OC）**：包括用户自创人物、尚无稳定公开作品身份的人物。此时才读取 [references/oc.md](references/oc.md)，为该 OC 建立视觉身份块和跨图状态规则。自造名字不能代替视觉描述。
+- **公开角色与 OC 同框**：仅给 OC 使用该参考文件的身份块；公开角色继续使用名字锚。保留用户指定的 OC，不要为了模型熟悉度把 OC 换成公开角色。
+- **没有 OC**：不要加载或套用 OC 的全维度、一致性及固定身份块规则。
+
+用户只要文字提示词时交付文字；用户要求实际生图时才调用可用的生成工作流。
+
+# 通用写法
+
+Anima 更容易表现**当前帧可见的事实**。每张图先确定一个主动作、一个主要表情和必要的空间关系，再写 tag。把“衣服正在被脱”“道具已损坏”这类过程或抽象状态改成画面中的结果：露出的部位、衣物落点、断裂的两截等。不要把剧情因果交给模型推断。
+
+优先用可识别的 Danbooru tag 描述主体、动作、表情、机位、服装与画风；自然语言只用于 tag 难以表达的接触点、前后关系、光线作用和简短氛围。含比喻的词可能被字面化，关键视觉元素改写为具体物件或姿势。删掉重复、互斥和不影响画面的修饰。
+
+常用次序：**质量与安全 → 人数 → 角色身份 → 画师 → 本帧服装/外观变化 → 动作与表情 → 场景 → 机位与光线**。画师 tag 用 @ 前缀。角色多于一个时分开描述每人的动作和位置。标签通常用空格，不需把词间空格改成下划线；模型约定的 score_* 标签除外。
+
+按用户用途选择画幅：头像 1:1，角色肖像约 3:4，全身约 2:3，宽场景约 16:9。比例是起点，构图需要优先。缺少非关键细节时给合理默认；会改变画面核心意图的歧义再澄清。
+
+# 模板选择
+
+## A：短提示词、立绘、快速测试
+
+以 tag 为主。高人气公开角色可从极简版开始，只有要控制的内容才继续追加。
+
+~~~text
+masterpiece, best quality, safe, 1girl, [角色名 (作品名)], [@画师可选], [本帧动作], [表情], [场景], [机位], [光线]
+~~~
+
+OC 使用同一模板，但把角色名锚换成 [references/oc.md](references/oc.md) 中的固定视觉身份块。仅测试公开角色的模型先验时，可进一步缩短为“角色名 (作品名), 画师或风格 tag”。纯场景交由 anima-scene-prompt。
+
+## B：分段式，动作、多角色或成人画面
+
+每行只承担一个语义层；换行本身就是分层，不依赖特殊分隔词。
+
+~~~text
+[质量、安全、需要时的 censor 标签]
+[人数、机位、构图]
+[角色 1 身份；角色 2 身份或可见部分]
+[本帧姿势、主动作、明确接触点]
+[表情、动作效果]
+[地点、2–3 个有用的环境物件、光源]
+[仅在确有需要时加入文字/音效]
+~~~
+
+公开角色所在行默认只要“角色名 (作品名)”及本帧变化；OC 所在行使用 OC 身份块。角色与道具的归属写明“谁的手接触什么”，避免在同一行混写两个人的特征。成人动作细节由 anima-nsfw-prompt 选择，仍使用本模板的结构和安全标签。
+
+## C：叙事式，单张成品与氛围
+
+先用 tag 锁定角色与风格，再以分号把可见层次依次展开：姿势/动作；表情与视线；环境与受光；一句简短情绪收尾。不要借叙事语句替代人物、动作或道具的可见状态。
+
+~~~text
+masterpiece, best quality, safe, 1girl, [角色名 (作品名) 或 OC 视觉身份块], [@画师可选]; [本帧可见动作与接触点]; [表情、视线]; [场景、机位、光线如何落在主体上]; evoking a [mood] atmosphere.
+~~~
+
+模板 C 的自然语言应帮助空间关系与气氛成立；能用简短 tag 表达的内容无需重复写成长句。批量图保持画师、主要风格与场景基调一致，仅替换本帧状态。
+
+# 质量、安全与负面提示词
+
+## 质量与模型
+
+| 模型 | 正面质量头 | 常用设置 |
+|---|---|---|
+| Anima Aesthetic | masterpiece, best quality；可选 highres, newest, very aesthetic | 约 30 步，CFG 4，sampler 可从 er_sde 或 euler 开始 |
+| Anima Turbo | masterpiece, best quality, score_9, score_8, score_7 | 约 8–12 步，CFG 1 |
+| Anima Base | masterpiece, best quality；可加 score_9, score_8, score_7 | 约 30 步，CFG 4 |
+
+未指定模型档位时从 Aesthetic 开始。质量词放在开头，选择少数即可；Aesthetic 不加 score_*。ComfyUI 工作流需配套 Anima 所用的 Qwen3 0.6B 文本编码器与 Qwen Image VAE；具体文件名以使用的模型发布包为准。如采用官方或自有工作流，优先核对其模型、编码器、VAE、采样器和推荐设置；不要把本表当作安装路径或脚本依赖。探索时随机 seed；比较画师或参数时复用同一组 seed，并只改一个主要变量。
+
+## 安全标签
+
+按画面实际可见内容选一档：safe（全年龄）、sensitive（性感但无明确裸露）、nsfw（明确裸露）、explicit（明确性行为或性器官画面）。需要打码时正面写相应 censor 标签；需要无码时可用 uncensored，并在负面按需排除 censored、bar censor、mosaic censoring。标签必须与正面画面描述一致，不靠档位词暗示缺失的可见动作。
+
+## 负面提示词
+
+负面用于压制**具体且不想出现的误读**，不作固定保险清单。基础负面可从下面开始，简单肖像可进一步缩短，明确不需要负面时可以留空：
+
+~~~text
+worst quality, low quality, blurry, jpeg artifacts, bad anatomy, bad hands, extra digits, missing fingers, watermark, signature
+~~~
+
+根据画面追加，而不是整表复制：
+
+| 正面情况 | 可选负面 |
+|---|---|
+| 手或握物是画面重点 | fused fingers, extra hands, duplicate weapon |
+| 多角色同框 | cloned face, merged bodies, extra limbs |
+| 不看镜头 | looking at viewer |
+| 全身或强透视 | bad proportions, long neck, missing limbs |
+| 需要彩色 | monochrome, greyscale, sepia |
+| 文字不是主体 | large text, watermark text, unreadable title |
+| 需要明确时段 | 对立时段，如月夜图排除 daylight, sunset |
+| 需要无码 | censored, bar censor, mosaic censoring |
+| 想避免额外路人 | strangers, bystanders |
+
+**提交前扫描正负冲突**：正面有镜子、文字、多人、遮挡或某件衣物时，不要在负面同时压制它；不要用 multiple people 压掉设计中的双人。对不该出现的人，先写清主体人数与空间，再按需排除路人。负面不应写带有身份、性别或关系偏见的全局排除项；只按用户明确的画面意图控制。
+
+# 构图、视线、道具和多角色
+
+- **构图与光线**：肖像常用 upper body、shallow depth of field；动作可用 dynamic pose、dutch angle、foreshortening；场景可用 wide shot。时间本身不够具体时，补光源方向、色温和受光物，例如 moonlight through the window, cool light across the floor。
+- **视线**：按当前画面选择镜头、另一角色或物件中的一个主要目标。对视页写双方朝向；不看镜头的页避免默认 looking at viewer。POV 写明是谁的视角，并给出可信的前景或机位线索。
+- **道具**：仅描述本帧可见或动作必需的道具。关键道具写形状、颜色、持有者与位置；状态变化写当前状态和原位置，例如“发饰在地上，头发上已无发饰”。发光物需要时补光实际落在何处。
+- **服装与外观变化**：公开角色只写用户要求或本帧动作必需的变化；OC 依参考文件维护当前状态。脱下、破损、打开等状态写可见结果；一个部位避免同时出现互斥状态。
+- **多角色**：分别写身份、位置和动作；接触写“谁的什么部位接触谁的什么部位”。只露手或背影的角色写清其与身体、衣袖或画面边缘的连接。用人数、前后景及遮挡控制画面，勿自动给 OC 换公开角色。
+- **文字与 UI**：模型生成的字可能不可读。剧情必须依赖精确字句时，优先后期排版；prompt 中可要求简短标题、音效或模糊笔迹，并给它明确位置。
+
+# 成人画面的接口
+
+成人内容的题材与动作词由 anima-nsfw-prompt 补充。本 skill 仍决定模板、安全档、画师和参数。动态或多人画面优先 B；重氛围的单张可用 C。正面写可见姿势、参与者、接触点、服装状态与场景；不要同时要求同一部位做互斥动作。若 faceless 或 POV 是画面的关键，说明其机位、身体连接与可见范围。负面只处理该画面实际可能出现的错位、重复部件或打码。
+
+# 风格和画师选择
+
+**先看角色先验，再看画风目标。** 高人气公开角色优先不加画师，利用角色名还原原作；冷门角色、OC、指定画风或需要统一系列风格时再选画师。无明确风格需求也可以不加画师。画师 tag 通常选一个；需要组合时优先不超过两个。跨页系列固定画师选择，比较画师时用相同 prompt 与 seed。
+
+以下映射可直接用于初选，最终由具体角色、配色和画面目标决定；括号里的补充 tag 是可选纠偏：
+
+| 气质或用途 | 画师候选 |
+|---|---|
+| 温婉、清冷、精灵、柔和光感 | @rella（可配 detailed eyes, round eyes, large pupils） |
+| 强个性、傲娇、腹黑、张扬 | @hiten |
+| 神秘、魔女、氛围 | @shirabi |
+| 深色、哥特、冷调 | @mochizuki kei |
+| 热血、红色系、动作 | @modare / @namie |
+| 萌系 | @askzy |
+| 少女向精致 | @yoneyama mai（长颈倾向可试 normal neck, small head） |
+| 水彩、日常、场景 | @sw33t / @acky bright |
+| 像素风 | @capcom_vs_snk2 / @motocross saito |
+| 线稿 | @imkay 3 |
+| 成人画面 | @cowani / @sogushstyle / @spd / @c0ff1ng / @shexyo |
+| 现代日常、成熟人物 | @tatsunami youtoku / @yukiyoshi mamizu / @kyuuba melo / @a5h1ma |
+| 韩漫风现代室内 | @dishwasher1910 / @nixeu |
+| 英气、戏剧化色彩 | @mika pikazo / @hiten |
+
+题材速选：重成人画面可试 @a5h1ma 或 @nekojira；成熟人物可试 @sogush；场景与氛围可试 @rella；叙事、喜剧或动作可试 @hiten、@modare、@yoneyama mai、@dishwasher1910。无清晰方向、又确实需要画师组合时，可试 @mika pikazo, @redjuice。
+
+画师 tag 在不同 Anima 版本上的效果可能变化。@sw33t、@geffstyle、@Ani2rel 的既有经验主要来自 Base，迁移到 Aesthetic 前先小样比较。@wlop 等半写实画师可能改变动漫感，只有目标风格需要时使用。画师对角色配色或服装造成偏差时，优先换画师或去掉画师，而非堆叠大量纠偏词。角色有招牌姿势时，具体 pose 往往比抽象气质词更有辨识度。
+
+可选风格 tag：像素用 pixel art, limited palette, dithering, 16-bit；水彩用 watercolor, hand-drawn, soft brushwork；装饰平面用 superflat, flat color, vector art；线稿用 lineart, sketch, simple background。风格词按目标少量选取。
+
+# 交付
+
+用户要求提示词时，给一个可复制的正面 prompt、单独的负面 prompt，并标明模板、模型档位、画幅、steps、CFG、sampler、seed 与画师选择。只解释会影响选择的关键理由。若用户要求实际生成，使用当前可用且经确认的生成工具提交、读取输出并报告文件与参数；本 skill 不依赖特定本机脚本、目录、显卡或后台任务。
